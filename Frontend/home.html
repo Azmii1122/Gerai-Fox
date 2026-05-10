@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerai.Fox - Food Platform</title>
+</head>
+<style>
+    :root {
+        --accent-color: #6366f1;
+        --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        --nav-hover: #FF3105;
+    }
+
+    html body {
+        background-color: #858585;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .navbar {
+        position: sticky;
+        /* atau sticky */
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .nav-container {
+        background-color: #ffffff;
+        width: 90%;
+        /* Lebar navbar, bisa diatur sesuai selera */
+        max-width: 1200px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 30px 30px;
+        margin-top: 0px;
+
+        /* Efek Floating: Mepet atas, radius hanya di bawah */
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+
+        /* Memberikan sedikit bayangan agar terlihat 'floating' */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+
+
+    .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 45px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .nav-icons {
+        display: flex;
+        gap: 15px;
+    }
+
+    /* Style untuk lingkaran placeholder */
+    .circle {
+        background-color: #b0b0b0;
+        border-radius: 50%;
+    }
+
+    .logo {
+        width: 45px;
+        height: 45px;
+        margin-left: 40px;
+    }
+
+    .icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 20px;
+    }
+</style>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="circle logo"></div>
+
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Explore</a></li>
+                    <li><a href="#">Discount</a></li>
+                    <li><a href="#">Orders</a></li>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+
+                <div class="nav-icons">
+                    <div class="circle icon"></div>
+                    <div class="circle icon"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+</body>
+
+</html>
