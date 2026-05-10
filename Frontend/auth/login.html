@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gabung GeraiFox</title>
     <style>
         :root {
-            --accent-color: #6366f1; /* Indigo modern */
+            --accent-color: #6366f1;
+            /* Indigo modern */
             --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             --text-main: #1e293b;
             --text-muted: #64748b;
@@ -183,16 +185,19 @@
                 height: auto;
                 max-width: 500px;
             }
+
             .info-panel {
                 padding: 40px;
                 min-height: 200px;
             }
+
             .form-panel {
                 padding: 40px;
             }
         }
     </style>
 </head>
+
 <body>
 
     <main class="main-wrapper">
@@ -215,7 +220,7 @@
                 <p>Continuation perjalanan digitalmu hari ini.</p>
             </div>
 
-            <form action="../../Backend/auth-system/login.php" method="POST">
+            <form action="../../Backend/auth-system/login.php" method="POST" id="loginForm">
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
@@ -236,8 +241,6 @@
             </form>
         </section>
     </main>
-
-    
-
 </body>
+
 </html>

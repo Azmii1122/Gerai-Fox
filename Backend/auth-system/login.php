@@ -19,7 +19,7 @@ if (isset($_POST['login'])) {
         $_SESSION['role'] = $row['role'];
 
         if ($row['role'] == 'admin') {
-            header("Location: ../admin/user_management.php");
+            header("Location: ../admin/dashboard.php");
         } else if ($row['role'] == 'merchant') {
             header("Location: ../../Frontend/merchant/dashboard.html");
         } else {
