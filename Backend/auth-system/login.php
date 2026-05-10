@@ -21,7 +21,7 @@ if (isset($_POST['login'])) {
         if ($row['role'] == 'admin') {
             header("Location: ../admin/dashboard.php");
         } else if ($row['role'] == 'merchant') {
-            header("Location: ../../Frontend/merchant/dashboard.html");
+            header("Location: ../../Frontend/merchant/dashboard.php");
         } else {
             header("Location: ../../Frontend/buyer/home.html");
         }
