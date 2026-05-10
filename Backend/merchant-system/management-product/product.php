@@ -10,10 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-$host = "localhost";
-$db_name = "gerai_fox_db"; // Ganti dengan nama database Anda
-$username = "root";        // Ganti dengan username database Anda
-$password = "";            // Ganti dengan password database Anda
+include '../../db_connect.php';     // Ganti dengan password database Anda
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
