@@ -1,5 +1,6 @@
 <?php
-include 'db_connect.php';
+session_start();
+include '../db_connect.php';
 
 if (isset($_POST['login'])) {
     $username = $_POST['username'];
@@ -8,13 +9,24 @@ if (isset($_POST['login'])) {
     $query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
     $result = mysqli_query($conn, $query);
 
-    if (mysqli_num_rows($result) == 1) {
-        session_start();
-        $_SESSION['username'] = $username;
-        echo "<script>alert('Login berhasil!'); window.location='home.html';</script>";
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        
+        $_SESSION['id'] = $row['id'];
+        $_SESSION['username'] = $row['username'];
+        $_SESSION['email'] = $row['email'];
+        $_SESSION['nama'] = $row['nama'];
+        $_SESSION['role'] = $row['role'];
+
+        if ($row['role'] == 'admin') {
+            header("Location: ../admin/dashboard.php");
+        } else if ($row['role'] == 'merchant') {
+            header("Location: ../../Frontend/merchant/dashboard.html");
+        } else {
+            header("Location: ../../Frontend/buyer/home.html");
+        }
     } else {
-        echo "<script>alert('Login gagal! Periksa username dan password Anda.');</script>";
+        echo "<script>alert('Username atau password salah!');</script>";
     }
 }
-
 ?>
