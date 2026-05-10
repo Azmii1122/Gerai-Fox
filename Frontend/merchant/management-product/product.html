@@ -1,13 +1,529 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog-Gerai</title>
+    <title>Katalog - Gerai Fox</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome & Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        fox: {
+                            50: '#fff3e0',
+                            100: '#ffe0b2',
+                            500: '#f97316', // Orange 500
+                            600: '#ea580c', // Orange 600
+                            900: '#7c2d12', // Orange 900
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Modal Animation */
+        .modal-enter { opacity: 0; transform: scale(0.95); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.2s ease-out; }
+        .modal-leave { opacity: 1; transform: scale(1); }
+        .modal-leave-active { opacity: 0; transform: scale(0.95); transition: all 0.2s ease-in; }
+
+        /* Toast Animation */
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-animate { animation: slideInUp 0.3s ease-out forwards; }
+    </style>
 </head>
-<body>
-    <h1>Ubah Productmu</h1>
-    <h2>Nama Produk</h2>
-    <input type="text" placeholder="Nama Produk">
+<body class="text-slate-800 antialiased overflow-hidden flex h-screen">
+
+    <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col shadow-sm z-10">
+        <div class="h-16 flex items-center px-6 border-b border-slate-100">
+            <div class="flex items-center gap-2 text-fox-500">
+                <i class="fa-solid fa-fox text-2xl"></i>
+                <span class="text-xl font-bold tracking-tight text-slate-900">Gerai Fox</span>
+            </div>
+        </div>
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:text-fox-600 hover:bg-fox-50 rounded-lg transition-colors">
+                <i class="fa-solid fa-chart-pie w-5"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-fox-50 text-fox-600 rounded-lg transition-colors">
+                <i class="fa-solid fa-book-open w-5"></i>
+                <span class="font-medium">Katalog Menu</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:text-fox-600 hover:bg-fox-50 rounded-lg transition-colors">
+                <i class="fa-solid fa-receipt w-5"></i>
+                <span class="font-medium">Pesanan</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:text-fox-600 hover:bg-fox-50 rounded-lg transition-colors">
+                <i class="fa-solid fa-gear w-5"></i>
+                <span class="font-medium">Pengaturan</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50">
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 z-10">
+            <div class="flex items-center md:hidden gap-2 text-fox-500">
+                <i class="fa-solid fa-fox text-xl"></i>
+                <span class="font-bold text-slate-900">Gerai Fox</span>
+            </div>
+            <h1 class="hidden md:block text-lg font-semibold text-slate-800">Manajemen Katalog</h1>
+            <div class="flex items-center gap-4">
+                <button class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition">
+                    <i class="fa-solid fa-bell"></i>
+                </button>
+                <div class="h-8 w-8 rounded-full bg-fox-100 border-2 border-fox-500 flex items-center justify-center text-fox-600 font-bold overflow-hidden">
+                    <img src="https://placehold.co/100x100/ea580c/white?text=A" alt="Admin" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Body -->
+        <div class="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">
+            <!-- Action Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Daftar Menu</h2>
+                    <p class="text-sm text-slate-500 mt-1">Kelola hidangan dan minuman yang tersedia di warung Anda.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="searchInput" placeholder="Cari menu..." class="pl-10 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-fox-500 focus:border-fox-500 w-full sm:w-64">
+                    </div>
+                    <button onclick="openModal('add')" class="bg-fox-500 hover:bg-fox-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm shadow-fox-500/30 transition-all flex items-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-plus"></i> Tambah Menu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="hidden flex-col items-center justify-center py-20">
+                <i class="fa-solid fa-circle-notch fa-spin text-4xl text-fox-500 mb-4"></i>
+                <p class="text-slate-500">Memuat katalog menu...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-slate-300">
+                <div class="w-20 h-20 bg-fox-50 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-utensils text-3xl text-fox-500"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-900 mb-1">Belum Ada Menu</h3>
+                <p class="text-slate-500 mb-4 text-center max-w-sm">Katalog Anda masih kosong. Mulai tambahkan menu makanan atau minuman untuk pelanggan Anda.</p>
+                <button onclick="openModal('add')" class="text-fox-600 font-medium hover:text-fox-700">
+                    <i class="fa-solid fa-plus mr-1"></i> Tambah Menu Sekarang
+                </button>
+            </div>
+
+            <!-- Grid Data -->
+            <div id="menuGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Cards akan dirender oleh JavaScript disini -->
+            </div>
+        </div>
+    </main>
+
+    <div id="formModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeModal('formModal')"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-md relative z-10 flex flex-col max-h-[90vh]">
+                <div class="flex items-center justify-between p-5 border-b border-slate-100">
+                    <h3 id="modalTitle" class="text-lg font-semibold text-slate-900">Tambah Menu Baru</h3>
+                    <button onclick="closeModal('formModal')" class="text-slate-400 hover:text-slate-600 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                
+                <form id="menuForm" onsubmit="handleFormSubmit(event)" class="p-5 overflow-y-auto">
+                    <input type="hidden" id="menuId">
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Nama Menu <span class="text-red-500">*</span></label>
+                            <input type="text" id="nama" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-fox-500 focus:border-fox-500 outline-none transition-all" placeholder="Contoh: Nasi Goreng Spesial">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Harga (Rp) <span class="text-red-500">*</span></label>
+                                <input type="number" id="harga" required min="0" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-fox-500 focus:border-fox-500 outline-none transition-all" placeholder="25000">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Kategori <span class="text-red-500">*</span></label>
+                                <select id="kategori" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-fox-500 focus:border-fox-500 outline-none transition-all bg-white">
+                                    <option value="" disabled selected>Pilih...</option>
+                                    <option value="Makanan">Makanan</option>
+                                    <option value="Minuman">Minuman</option>
+                                    <option value="Cemilan">Cemilan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Deskripsi Singkat</label>
+                            <textarea id="deskripsi" rows="3" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-fox-500 focus:border-fox-500 outline-none transition-all resize-none" placeholder="Isi bahan atau penjelasan menu..."></textarea>
+                        </div>
+                        
+                        <div class="space-y-2 p-3 border border-slate-200 bg-slate-50 rounded-lg">
+                            <label class="block text-sm font-medium text-slate-900">Gambar Menu</label>
+                            
+                            <!-- Opsi 1: Upload File -->
+                            <div class="mt-2">
+                                <label class="block text-xs text-slate-500 mb-1">Opsi 1: Pilih dari Galeri/Komputer</label>
+                                <input type="file" id="gambarFile" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-fox-500 file:text-white hover:file:bg-fox-600 transition-all bg-white border border-slate-300 rounded-lg p-1 cursor-pointer">
+                            </div>
+
+                            <div class="relative flex items-center py-2">
+                                <div class="flex-grow border-t border-slate-300"></div>
+                                <span class="flex-shrink-0 mx-4 text-slate-400 text-xs font-semibold">ATAU</span>
+                                <div class="flex-grow border-t border-slate-300"></div>
+                            </div>
+
+                            <!-- Opsi 2: Link URL -->
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">Opsi 2: Gunakan Link / Tautan Web</label>
+                                <input type="url" id="gambar" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-fox-500 focus:border-fox-500 outline-none transition-all text-sm" placeholder="https://contoh.com/gambar.jpg">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex gap-3 justify-end">
+                        <button type="button" onclick="closeModal('formModal')" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">Batal</button>
+                        <button type="submit" id="btnSubmit" class="px-4 py-2 text-sm font-medium text-white bg-fox-500 rounded-lg hover:bg-fox-600 shadow-sm shadow-fox-500/30 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-save"></i> Simpan Menu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeModal('deleteModal')"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm relative z-10 p-6 text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-triangle-exclamation text-2xl text-red-500"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-900 mb-2">Hapus Menu?</h3>
+                <p class="text-sm text-slate-500 mb-6">Apakah Anda yakin ingin menghapus <span id="deleteItemName" class="font-semibold text-slate-800"></span>? Tindakan ini tidak dapat dibatalkan.</p>
+                <div class="flex gap-3 justify-center">
+                    <button onclick="closeModal('deleteModal')" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors flex-1">Batal</button>
+                    <button id="btnConfirmDelete" class="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 shadow-sm shadow-red-500/30 transition-all flex-1">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+
+    <script>
+        // --- Konfigurasi API ---
+        // Jika server PHP jalan, isi apiUrl dengan 'api.php'. 
+        // Untuk keperluan demo/preview tanpa server PHP, sistem akan mendeteksi dan menggunakan MOCK_DATA.
+        const apiUrl = 'api.php'; 
+        let menus = [];
+        let itemToDelete = null;
+
+        // Data awal untuk simulasi jika API gagal (misal di lingkungan preview)
+        const MOCK_DATA = []; // Dikosongkan agar pemilik gerai melihat tampilan awal tanpa menu
+
+        // Format Rupiah
+        const formatRupiah = (angka) => {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+        };
+
+        // --- Core CRUD Functions (GET, POST, PUT, DELETE) ---
+
+        // 1. GET: Load Data
+        async function fetchMenus() {
+            showLoading(true);
+            try {
+                const response = await fetch(apiUrl, { method: 'GET' });
+                if (!response.ok) throw new Error('API tidak ditemukan, fallback ke mock data');
+                const data = await response.json();
+                menus = data;
+            } catch (error) {
+                console.warn(error.message);
+                // Fallback jika tidak ada server PHP (untuk keperluan preview live)
+                if(menus.length === 0 && !window.mockInitialized) {
+                    menus = [...MOCK_DATA];
+                    window.mockInitialized = true;
+                }
+            } finally {
+                showLoading(false);
+                renderGrid();
+            }
+        }
+
+        // 2. POST / PUT : Tambah & Edit Data
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('gambarFile');
+            
+            // Fungsi internal untuk melanjutkan proses simpan data
+            const processData = async (gambarValue) => {
+                const id = document.getElementById('menuId').value;
+                const payload = {
+                    nama: document.getElementById('nama').value,
+                    harga: document.getElementById('harga').value,
+                    kategori: document.getElementById('kategori').value,
+                    deskripsi: document.getElementById('deskripsi').value,
+                    gambar: gambarValue // Menggunakan gambar dari File atau URL
+                };
+
+                const isEdit = id !== '';
+                const method = isEdit ? 'PUT' : 'POST';
+                
+                if (isEdit) payload.id = id;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error('Simulated API Call');
+
+                    fetchMenus(); 
+                    
+                } catch (error) {
+                    // Fallback Mock Logic untuk Preview
+                    if (isEdit) {
+                        const index = menus.findIndex(m => m.id == id);
+                        if(index !== -1) menus[index] = { ...menus[index], ...payload };
+                    } else {
+                        payload.id = Date.now();
+                        if(!payload.gambar) payload.gambar = `https://placehold.co/400x300/e2e8f0/64748b?text=${payload.nama.charAt(0)}`;
+                        menus.push(payload);
+                    }
+                    renderGrid();
+                }
+
+                closeModal('formModal');
+                showToast(isEdit ? 'Menu berhasil diperbarui!' : 'Menu baru berhasil ditambahkan!', 'success');
+            };
+
+            // Cek apakah user memilih file gambar dari komputer/HP
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // event.target.result berisi data Base64 dari gambar yang dipilih
+                    processData(event.target.result); 
+                };
+                // Membaca file yang diupload menjadi format teks Base64
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                // Jika tidak upload file, gunakan teks yang ada di kolom URL
+                processData(document.getElementById('gambar').value);
+            }
+        }
+
+        // 3. DELETE: Hapus Data
+        async function executeDelete() {
+            if (!itemToDelete) return;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: itemToDelete })
+                });
+
+                if (!response.ok) throw new Error('Simulated API Call');
+                
+                fetchMenus();
+            } catch (error) {
+                // Fallback Mock Logic
+                menus = menus.filter(m => m.id != itemToDelete);
+                renderGrid();
+            }
+
+            closeModal('deleteModal');
+            showToast('Menu berhasil dihapus!', 'success');
+            itemToDelete = null;
+        }
+
+
+        // --- UI & Rendering Functions ---
+
+        // Render Grid Katalog
+        function renderGrid(dataToRender = menus) {
+            const grid = document.getElementById('menuGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            grid.innerHTML = '';
+
+            if (dataToRender.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+
+                dataToRender.forEach(menu => {
+                    const fallbackImg = `https://placehold.co/400x300/e2e8f0/64748b?text=${encodeURIComponent(menu.nama.charAt(0))}`;
+                    const imgUrl = menu.gambar ? menu.gambar : fallbackImg;
+                    
+                    // Kategori Color mapping
+                    let badgeClass = "bg-slate-100 text-slate-600";
+                    if(menu.kategori === 'Makanan') badgeClass = "bg-orange-100 text-orange-700";
+                    if(menu.kategori === 'Minuman') badgeClass = "bg-blue-100 text-blue-700";
+                    if(menu.kategori === 'Cemilan') badgeClass = "bg-yellow-100 text-yellow-700";
+
+                    const card = `
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow group flex flex-col">
+                            <div class="relative h-48 overflow-hidden bg-slate-100">
+                                <img src="${imgUrl}" alt="${menu.nama}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='${fallbackImg}'">
+                                <div class="absolute top-3 right-3">
+                                    <span class="px-2.5 py-1 text-xs font-semibold rounded-full shadow-sm backdrop-blur-md ${badgeClass}">${menu.kategori}</span>
+                                </div>
+                            </div>
+                            <div class="p-5 flex-1 flex flex-col">
+                                <h3 class="text-lg font-bold text-slate-900 mb-1 line-clamp-1">${menu.nama}</h3>
+                                <p class="text-fox-600 font-bold mb-3">${formatRupiah(menu.harga)}</p>
+                                <p class="text-sm text-slate-500 line-clamp-2 mb-4 flex-1">${menu.deskripsi || 'Tidak ada deskripsi'}</p>
+                                
+                                <div class="flex items-center gap-2 pt-4 border-t border-slate-100">
+                                    <button onclick="openModal('edit', ${menu.id})" class="flex-1 px-3 py-2 text-sm font-medium text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors">
+                                        <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
+                                    </button>
+                                    <button onclick="confirmDelete(${menu.id}, '${menu.nama.replace(/'/g, "\\'")}')" class="px-3 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 border border-red-100 rounded-lg transition-colors">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.insertAdjacentHTML('beforeend', card);
+                });
+            }
+        }
+
+        // Modal Handlers
+        function openModal(mode, id = null) {
+            const modal = document.getElementById('formModal');
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('menuForm');
+            const btn = document.getElementById('btnSubmit');
+
+            form.reset();
+            document.getElementById('menuId').value = '';
+            document.getElementById('gambarFile').value = ''; // Pastikan input file kosong saat dibuka
+
+            if (mode === 'add') {
+                title.textContent = 'Tambah Menu Baru';
+                btn.innerHTML = '<i class="fa-solid fa-plus"></i> Tambah Menu';
+            } else if (mode === 'edit') {
+                title.textContent = 'Edit Menu';
+                btn.innerHTML = '<i class="fa-solid fa-save"></i> Simpan Perubahan';
+                
+                const menu = menus.find(m => m.id == id);
+                if (menu) {
+                    document.getElementById('menuId').value = menu.id;
+                    document.getElementById('nama').value = menu.nama;
+                    document.getElementById('harga').value = menu.harga;
+                    document.getElementById('kategori').value = menu.kategori;
+                    document.getElementById('deskripsi').value = menu.deskripsi || '';
+                    document.getElementById('gambar').value = menu.gambar || '';
+                }
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function confirmDelete(id, nama) {
+            itemToDelete = id;
+            document.getElementById('deleteItemName').textContent = nama;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            if(modalId === 'deleteModal') itemToDelete = null;
+        }
+
+        // UI Helpers
+        function showLoading(show) {
+            const loader = document.getElementById('loadingState');
+            const grid = document.getElementById('menuGrid');
+            if (show) {
+                loader.classList.remove('hidden');
+                loader.classList.add('flex');
+                grid.classList.add('hidden');
+            } else {
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+                grid.classList.remove('hidden');
+            }
+        }
+
+        // Custom Toast Notification (Pengganti Alert)
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const colors = type === 'success' ? 'bg-green-50 text-green-800 border-green-200' : 'bg-red-50 text-red-800 border-red-200';
+            const icon = type === 'success' ? 'fa-circle-check text-green-500' : 'fa-circle-xmark text-red-500';
+            
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 px-4 py-3 border rounded-xl shadow-lg toast-animate ${colors}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-lg"></i>
+                <p class="font-medium text-sm">${message}</p>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(100%)';
+                toast.style.transition = 'all 0.3s ease-in';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Fitur Pencarian Cepat (Frontend Filter)
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = menus.filter(menu => 
+                menu.nama.toLowerCase().includes(keyword) || 
+                menu.kategori.toLowerCase().includes(keyword)
+            );
+            renderGrid(filtered);
+        });
+
+        // Event Listener untuk tombol delete confirm
+        document.getElementById('btnConfirmDelete').addEventListener('click', executeDelete);
+
+        // Inisialisasi awal
+        window.onload = () => {
+            fetchMenus();
+        };
+    </script>
 </body>
 </html>
