@@ -693,7 +693,7 @@
     <div id="toastContainer" class="toast-container"></div>
 
     <script>
-        const apiUrl = 'api.php'; 
+        const apiUrl = '../../Backend/merchat-system/management-product/product.php'; 
         let menus = [];
         let itemToDelete = null;
         const MOCK_DATA = []; // Mulai kosong
@@ -888,3 +888,14 @@
     </script>
 </body>
 </html>
+
+<!--CREATE TABLE `menus` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nama` varchar(100) NOT NULL,
+  `harga` int(11) NOT NULL,
+  `kategori` varchar(50) NOT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `gambar` longtext DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;-->
