@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Produk - gerai.fox</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* ==================== CSS NATIVE (Reset & Base) ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+            color: #1f2937;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ==================== NAVBAR ==================== */
+        .navbar-wrapper {
+            padding: 16px 20px 0;
+            position: sticky;
+            top: 16px;
+            z-index: 50;
+        }
+
+        .navbar {
+            max-width: 1280px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 50px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #f3f4f6;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #111827;
+        }
+
+        .nav-logo-icon {
+            background-color: #ffedd5;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            color: #ea580c;
+        }
+
+        .text-orange { color: #ea580c; }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .nav-links a { transition: color 0.2s; }
+        .nav-links a:hover { color: #ea580c; }
+        .nav-links a.active { color: #ea580c; font-weight: 600; }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            background-color: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4b5563;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        .icon-btn:hover { background-color: #e5e7eb; }
+
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: #ea580c;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ==================== PRODUCT SECTION ==================== */
+        .product-section {
+            padding: 48px 0;
+            display: flex;
+            gap: 60px;
+        }
+
+        .product-image-col {
+            width: 50%;
+        }
+
+        .main-image-wrapper {
+            background-color: #e5e7eb;
+            border-radius: 16px;
+            aspect-ratio: 1 / 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .main-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .main-image-wrapper:hover img {
+            transform: scale(1.05);
+        }
+
+        .badge-hot {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 50px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .thumbnails {
+            display: flex;
+            gap: 16px;
+        }
+
+        .thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            cursor: pointer;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .thumb.active { border-color: #ea580c; background-color: #ffedd5; }
+        .thumb:not(.active) { background-color: #f3f4f6; }
+        .thumb:not(.active):hover { border-color: #fdba74; }
+
+        .product-detail-col {
+            width: 50%;
+            padding-top: 8px;
+        }
+
+        .product-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .price-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .price-main { font-size: 1.875rem; font-weight: 800; color: #ea580c; }
+        .price-strike { font-size: 0.875rem; color: #9ca3af; text-decoration: line-through; }
+        .product-desc { color: #6b7280; margin-bottom: 32px; line-height: 1.6; }
+
+        .action-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .qty-input-group {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 0 8px;
+        }
+
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 1.25rem;
+            transition: color 0.2s;
+        }
+
+        .qty-btn:hover { color: #ea580c; }
+        
+        .qty-input {
+            width: 48px;
+            text-align: center;
+            font-weight: 600;
+            color: #1f2937;
+            border: none;
+            background: transparent;
+            outline: none;
+        }
+
+        .btn-add-cart {
+            flex: 1;
+            background-color: #111827;
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-add-cart:hover { background-color: #1f2937; }
+
+        /* Accordion */
+        .accordion {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background-color: #ffffff;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .accordion-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            font-weight: 600;
+            color: #111827;
+            background-color: #ffffff;
+            transition: background-color 0.2s;
+        }
+
+        .accordion-header:hover { background-color: #f9fafb; }
+        .accordion-icon { color: #6b7280; transition: transform 0.3s ease; }
+
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+            background-color: #f9fafb;
+            color: #4b5563;
+            font-size: 0.875rem;
+        }
+
+        .accordion-content.open {
+            max-height: 500px;
+            opacity: 1;
+            padding: 0 20px 20px 20px;
+        }
+
+        .accordion-divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin-bottom: 12px;
+        }
+
+        /* Features */
+        .features {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .feature-item { display: flex; align-items: center; gap: 8px; }
+        .feature-item i { color: #f97316; }
+
+        /* ==================== REVIEWS SECTION ==================== */
+        .reviews-section {
+            background-color: #ffffff;
+            border-top: 1px solid #f3f4f6;
+            padding: 64px 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 32px;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .review-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background-color: #f9fafb;
+            transition: box-shadow 0.2s, background-color 0.2s;
+        }
+
+        .review-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            background-color: #ffffff;
+        }
+
+        .stars { display: flex; gap: 4px; color: #f97316; margin-bottom: 8px; }
+        .stars i.inactive { color: #d1d5db; }
+        .review-title { font-weight: 600; color: #111827; }
+        .review-text { font-size: 0.875rem; color: #4b5563; margin-top: 4px; }
+        
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #d1d5db;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            background-color: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            padding: 64px 0 32px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .footer-logo-icon {
+            background-color: #111827;
+            padding: 6px;
+            border-radius: 6px;
+            color: #ffffff;
+            display: flex;
+        }
+
+        .footer-brand { font-weight: 700; font-size: 1.25rem; color: #111827; }
+        .footer-desc { font-size: 0.875rem; color: #6b7280; }
+
+        .footer-col-title { font-weight: 700; color: #111827; margin-bottom: 16px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .footer-links a { font-size: 0.875rem; color: #6b7280; transition: color 0.2s; }
+        .footer-links a:hover { color: #ea580c; }
+
+        .footer-bottom {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #9ca3af;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 32px;
+        }
+
+        /* ==================== TOAST NOTIFICATION ==================== */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #111827;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+            
+            /* Animations */
+            transform: translateY(100px);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast i { color: #4ade80; }
+
+        /* ==================== RESPONSIVE DESIGN ==================== */
+        @media (max-width: 992px) {
+            .product-section { flex-direction: column; gap: 40px; }
+            .product-image-col, .product-detail-col { width: 100%; }
+            .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .nav-logo span { display: none; }
+            .reviews-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar-wrapper">
+        <nav class="navbar">
+            <div class="nav-logo">
+                <div class="nav-logo-icon">
+                    <i data-lucide="logo.png" style="width: 20px; height: 20px;"></i>
+                </div>
+                <span>gerai.<span class="text-orange">fox</span></span>
+            </div>
+
+            <div class="nav-links">
+                <a href="#" class="active">Home</a>
+                <a href="#">Explore</a>
+                <a href="#">Discount</a>
+                <a href="#">Orders</a>
+                <a href="#">About Us</a>
+            </div>
+
+            <div class="nav-actions">
+                <button class="icon-btn">
+                    <i data-lucide="search" style="width: 20px; height: 20px;"></i>
+                </button>
+                <button class="icon-btn">
+                    <i data-lucide="shopping-cart" style="width: 20px; height: 20px;"></i>
+                    <span class="cart-badge">2</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Product Section -->
+    <main class="container product-section">
+        
+        <!-- Kiri: Gambar Produk -->
+        <div class="product-image-col">
+            <div class="main-image-wrapper">
+                <img src="ayam geprek.jpg" alt="Product Image">
+                <div class="badge-hot">Terlaris</div>
+            </div>
+            <div class="thumbnails">
+                <div class="thumb active">
+                     <img src="https://placehold.co/200x200/fff7ed/ea580c?text=1" alt="Thumb">
+                </div>
+                <div class="thumb">
+                     <img src="https://placehold.co/200x200/f1f5f9/94a3b8?text=2" alt="Thumb">
+                </div>
+            </div>
+        </div>
+
+        <!-- Kanan: Detail Produk -->
+        <div class="product-detail-col">
+            <h1 class="product-title">Ayam Geprek</h1>
+            
+            <div class="price-wrapper">
+                <span class="price-main">Rp 9.000</span>
+                <span class="price-strike">Rp 10.000</span>
+            </div>
+            
+            <p class="product-desc">
+                Promo Gajian sale Ayam geprek paket hemat kini turun 10%.
+            </p>
+
+            <div class="action-row">
+                <div class="qty-input-group">
+                    <button type="button" class="qty-btn" onclick="changeQty(-1)">-</button>
+                    <input type="number" id="qtyInput" value="1" min="1" class="qty-input">
+                    <button type="button" class="qty-btn" onclick="changeQty(1)">+</button>
+                </div>
+                
+                <button class="btn-add-cart" onclick="addToCart(1)">
+                    <i data-lucide="shopping-cart" style="width: 20px; height: 20px;"></i>
+                    Masukkan Keranjang
+                </button>
+            </div>
+
+            <!-- Accordion Deskripsi -->
+            <div class="accordion">
+                <button class="accordion-header" onclick="toggleAccordion()">
+                    <span>Deskripsi Lengkap</span>
+                    <i data-lucide="chevron-down" id="accordion-icon" class="accordion-icon"></i>
+                </button>
+                <div id="accordion-content" class="accordion-content">
+                    <div class="accordion-divider"></div>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        <br><br>
+                        <strong>Bahan:</strong> 100% Ayam asli<br>
+                        <strong>tentang:</strong> lorem ipsum.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Info Tambahan -->
+            <div class="features">
+                <div class="feature-item">
+                    <i data-lucide="truck" style="width: 16px; height: 16px;"></i> Gratis Ongkir
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="shield" style="width: 16px; height: 16px;"></i> Garansi 7 Hari
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Latest Reviews Section -->
+    <section class="reviews-section">
+        <div class="container">
+            <h2 class="section-title">Latest Reviews</h2>
+            
+            <div class="reviews-grid">
+                <!-- Review Card 1 -->
+                <div class="review-card">
+                    <div>
+                        <div class="stars">
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                        </div>
+                        <h3 class="review-title">Sangat enak!</h3>
+                        <p class="review-text">Ayam nya sangat lembut.</p>
+                    </div>
+                    <div class="user-avatar">
+                        <img src="https://placehold.co/100x100/ea580c/ffffff?text=A" alt="User">
+                    </div>
+                </div>
+
+                <!-- Review Card 2 -->
+                <div class="review-card">
+                    <div>
+                        <div class="stars">
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" class="inactive" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                        </div>
+                        <h3 class="review-title">pengirimanya cepat</h3>
+                        <p class="review-text">Pengiriman sangat ceapt dan tepat waktu.</p>
+                    </div>
+                    <div class="user-avatar">
+                        <img src="https://placehold.co/100x100/ea580c/ffffff?text=B" alt="User">
+                    </div>
+                </div>
+
+                <!-- Review Card 3 -->
+                <div class="review-card">
+                    <div>
+                        <div class="stars">
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                            <i data-lucide="star" style="fill: currentColor; width: 16px; height: 16px;"></i>
+                        </div>
+                        <h3 class="review-title">Harganya Affordable</h3>
+                        <p class="review-text">Harganya sangat ramah dikantong.</p>
+                    </div>
+                    <div class="user-avatar">
+                        <img src="https://placehold.co/100x100/ea580c/ffffff?text=C" alt="User">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Logo Footer -->
+                <div>
+                    <div class="footer-logo">
+                        <div class="footer-logo-icon">
+                            <i data-lucide="box" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <span class="footer-brand">gerai.fox</span>
+                    </div>
+                    <p class="footer-desc">Platform Food delivery terbaik.</p>
+                </div>
+                
+                <!-- Links -->
+                <div>
+                    <h4 class="footer-col-title">Use cases</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">UI design</a></li>
+                        <li><a href="#">UX design</a></li>
+                        <li><a href="#">Wireframing</a></li>
+                        <li><a href="#">Diagramming</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-col-title">Explore</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Design</a></li>
+                        <li><a href="#">Prototyping</a></li>
+                        <li><a href="#">Development features</a></li>
+                        <li><a href="#">Design systems</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-col-title">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Best practices</a></li>
+                        <li><a href="#">Colors</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                &copy; 2026 gerai.fox. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
+        <span>Berhasil ditambahkan ke keranjang!</span>
+    </div>
+
+    <script>
+        // Inisialisasi Icons
+        lucide.createIcons();
+
+        // JS: Fungsi Accordion
+        function toggleAccordion() {
+            const content = document.getElementById('accordion-content');
+            const icon = document.getElementById('accordion-icon');
+            
+            content.classList.toggle('open');
+            
+            if (content.classList.contains('open')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // JS: Fungsi Kuantitas
+        function changeQty(amount) {
+            const input = document.getElementById('qtyInput');
+            let currentVal = parseInt(input.value);
+            let newVal = currentVal + amount;
+            if(newVal >= 1) {
+                input.value = newVal;
+            }
+        }
+
+        // JS: Menampilkan Toast Notifikasi
+        function showToastMessage() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // JS: Integrasi dengan Backend PHP
+        async function addToCart(productId) {
+            const qty = document.getElementById('qtyInput').value;
+            
+            try {
+                // Mengirim request POST ke API PHP kita
+                const response = await fetch('cart_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: qty
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showToastMessage();
+                    
+                    // Update angka di badge keranjang navbar (simulasi)
+                    const cartBadge = document.querySelector('.cart-badge');
+                    if (cartBadge && result.total_items) {
+                        cartBadge.innerText = result.total_items;
+                    }
+                } else {
+                    alert('Gagal menambahkan ke keranjang: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Jika file PHP tidak dijalankan di server lokal (hanya preview HTML statis),
+                // kita tetap munculkan toast agar UX nya bisa diuji coba secara visual
+                showToastMessage();
+            }
+        }
+    </script>
+</body>
+</html>

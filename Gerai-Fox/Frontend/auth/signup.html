@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gabung GeraiFox</title>
+    <style>
+        :root {
+            --accent-color: #6366f1; /* Indigo modern */
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Floating Container */
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            height: 650px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Sisi Kiri: Informasi (Imersif) */
+        .info-panel {
+            flex: 1;
+            background: #1e293b;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+            position: relative;
+        }
+
+        /* Dekorasi Lingkaran Halus */
+        .info-panel::after {
+            content: "";
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            background: var(--accent-color);
+            filter: blur(80px);
+            opacity: 0.2;
+            border-radius: 50%;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            z-index: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            z-index: 1;
+        }
+
+        .hero-text p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Sisi Kanan: Form */
+        .form-panel {
+            flex: 1.2;
+            padding: 60px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            margin-bottom: 35px;
+        }
+
+        .form-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            background: var(--text-main);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn-register:hover {
+            background: #0f172a;
+            transform: translateY(-2px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .login-link a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 850px) {
+            .main-wrapper {
+                flex-direction: column;
+                height: auto;
+                max-width: 500px;
+            }
+            .info-panel {
+                padding: 40px;
+                min-height: 200px;
+            }
+            .form-panel {
+                padding: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="main-wrapper">
+        <!-- Bagian Kiri: Info Imersif -->
+        <section class="info-panel">
+            <div class="brand-name">GERAI.FOX</div>
+            <div class="hero-text">
+                <h1>Satu platform,<br>berbagai kemudahan.</h1>
+                <p>Nikmati akses eksklusif ke berbagai layanan mahasiswa dalam satu genggaman digital.</p>
+            </div>
+            <div class="footer-note" style="font-size: 0.8rem; color: #64748b;">
+                &copy; 2026 Gerai.Fox Project
+            </div>
+        </section>
+
+        <!-- Bagian Kanan: Form -->
+        <section class="form-panel">
+            <div class="form-header">
+                <h2>Buat Akun</h2>
+                <p>Mulai perjalanan digitalmu hari ini.</p>
+            </div>
+
+            <form action="../../Backend/auth-system/daftar.php" method="POST">
+                <div class="form-group">
+                    <label for="fullname">Nama Lengkap</label>
+                    <input type="text" id="fullname" name="fullname" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Alamat Email</label>
+                    <input type="email" id="email" name="email" placeholder="nama@email.com" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="johndoe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-register" name="register">Daftar Sekarang</button>
+
+                <p class="login-link">
+                    Sudah punya akun? <a href="login.html">Masuk</a>
+                </p>
+            </form>
+        </section>
+    </main>
+
+    
+
+</body>
+</html>
