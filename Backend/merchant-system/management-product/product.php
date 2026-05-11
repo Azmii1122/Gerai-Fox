@@ -1,4 +1,8 @@
 <?php
+// Mencegah output error PHP merusak format JSON
+error_reporting(0);
+ini_set('display_errors', 0);
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -7,154 +11,143 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Tangani preflight request (CORS)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
-    exit();
 }
 
-include '../../db_connect.php';     // Ganti dengan password database Anda
+// ==========================================
+// 1. CEK API KEY (Sesuai Modul)
+// ==========================================
+$valid_api_key = "12345-RAHASIA-WEB";
+$client_key = isset($_GET['api_key']) ? $_GET['api_key'] : '';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $exception) {
-    // Jika tidak ada database, kita kirim error 500
-    // Note: Untuk keperluan testing lokal tanpa database, script frontend (index.html) 
-    // telah dilengkapi dengan sistem Mock/Fallback agar UI tetap berjalan.
+if ($client_key !== $valid_api_key) {
+    http_response_code(401);
+    die(json_encode(["status" => "error", "message" => "Unauthorized: API Key Salah!"]));
+}
+
+// ==========================================
+// 2. KONEKSI DATABASE (MySQLi Procedural)
+// ==========================================
+$host = "localhost";
+$db_name = "gerai_fox_db"; 
+$username = "root";        
+$password = "";            
+
+$conn = mysqli_connect($host, $username, $password, $db_name);
+
+if (!$conn) {
     http_response_code(500);
-    echo json_encode(["message" => "Connection error: " . $exception->getMessage()]);
-    exit();
+    die(json_encode(["status" => "error", "message" => "Koneksi gagal: " . mysqli_connect_error()]));
 }
 
-// Mendapatkan method HTTP (GET, POST, PUT, DELETE)
 $method = $_SERVER['REQUEST_METHOD'];
-
-// Membaca raw JSON input untuk POST, PUT, DELETE
 $input = json_decode(file_get_contents("php://input"), true);
 
 switch ($method) {
-    // ==========================================
-    // 1. GET - Load / Read Data
-    // ==========================================
+    // ------------------------------------------
+    // GET - Load / Read Data
+    // ------------------------------------------
     case 'GET':
-        try {
-            $stmt = $pdo->query("SELECT * FROM menus ORDER BY id DESC");
-            $menus = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            http_response_code(200);
-            echo json_encode($menus);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(["message" => "Gagal mengambil data", "error" => $e->getMessage()]);
+        $sql = "SELECT * FROM menus ORDER BY id DESC";
+        $result = mysqli_query($conn, $sql);
+        
+        $data = [];
+        if ($result) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = $row;
+            }
         }
+        
+        http_response_code(200);
+        // Membungkus data sesuai format Modul
+        echo json_encode(["status" => "success", "data" => $data]);
         break;
 
-    // ==========================================
-    // 2. POST - Tambah Data (Create)
-    // ==========================================
+    // ------------------------------------------
+    // POST - Tambah Data
+    // ------------------------------------------
     case 'POST':
-        if (!empty($input['nama']) && !empty($input['harga']) && !empty($input['kategori'])) {
-            try {
-                $query = "INSERT INTO menus (nama, harga, kategori, deskripsi, gambar) 
-                          VALUES (:nama, :harga, :kategori, :deskripsi, :gambar)";
-                
-                $stmt = $pdo->prepare($query);
-                
-                // Bind parameter & hindari XSS
-                $stmt->bindParam(':nama', htmlspecialchars(strip_tags($input['nama'])));
-                $stmt->bindParam(':harga', $input['harga']);
-                $stmt->bindParam(':kategori', htmlspecialchars(strip_tags($input['kategori'])));
-                $stmt->bindParam(':deskripsi', htmlspecialchars(strip_tags($input['deskripsi'] ?? '')));
-                $stmt->bindParam(':gambar', htmlspecialchars(strip_tags($input['gambar'] ?? '')));
-                
-                if ($stmt->execute()) {
-                    http_response_code(201);
-                    echo json_encode(["message" => "Menu berhasil ditambahkan.", "id" => $pdo->lastInsertId()]);
-                } else {
-                    http_response_code(503);
-                    echo json_encode(["message" => "Gagal menambahkan menu."]);
-                }
-            } catch (Exception $e) {
-                http_response_code(500);
-                echo json_encode(["message" => "Error Server", "error" => $e->getMessage()]);
+        if (!empty($input['nama']) && isset($input['harga']) && !empty($input['kategori'])) {
+            // Mencegah SQL Injection
+            $nama = mysqli_real_escape_string($conn, htmlspecialchars(strip_tags($input['nama'])));
+            $harga = (int)$input['harga'];
+            $kategori = mysqli_real_escape_string($conn, htmlspecialchars(strip_tags($input['kategori'])));
+            $deskripsi = mysqli_real_escape_string($conn, htmlspecialchars(strip_tags($input['deskripsi'] ?? '')));
+            $gambar = mysqli_real_escape_string($conn, $input['gambar'] ?? '');
+
+            $sql = "INSERT INTO menus (nama, harga, kategori, deskripsi, gambar) 
+                    VALUES ('$nama', $harga, '$kategori', '$deskripsi', '$gambar')";
+            
+            if (mysqli_query($conn, $sql)) {
+                http_response_code(201);
+                echo json_encode(["status" => "success", "message" => "Menu berhasil ditambahkan.", "id" => mysqli_insert_id($conn)]);
+            } else {
+                http_response_code(503);
+                echo json_encode(["status" => "error", "message" => "Gagal menyimpan ke database."]);
             }
         } else {
             http_response_code(400);
-            echo json_encode(["message" => "Data tidak lengkap. Nama, harga, dan kategori wajib diisi."]);
+            echo json_encode(["status" => "error", "message" => "Data tidak lengkap."]);
         }
         break;
 
-    // ==========================================
-    // 3. PUT - Edit/Update Data
-    // ==========================================
+    // ------------------------------------------
+    // PUT - Update Data
+    // ------------------------------------------
     case 'PUT':
-        if (!empty($input['id']) && !empty($input['nama']) && !empty($input['harga']) && !empty($input['kategori'])) {
-            try {
-                $query = "UPDATE menus 
-                          SET nama = :nama, harga = :harga, kategori = :kategori, 
-                              deskripsi = :deskripsi, gambar = :gambar 
-                          WHERE id = :id";
-                
-                $stmt = $pdo->prepare($query);
-                
-                $stmt->bindParam(':id', $input['id']);
-                $stmt->bindParam(':nama', htmlspecialchars(strip_tags($input['nama'])));
-                $stmt->bindParam(':harga', $input['harga']);
-                $stmt->bindParam(':kategori', htmlspecialchars(strip_tags($input['kategori'])));
-                $stmt->bindParam(':deskripsi', htmlspecialchars(strip_tags($input['deskripsi'] ?? '')));
-                $stmt->bindParam(':gambar', htmlspecialchars(strip_tags($input['gambar'] ?? '')));
-                
-                if ($stmt->execute()) {
-                    http_response_code(200);
-                    echo json_encode(["message" => "Menu berhasil diperbarui."]);
-                } else {
-                    http_response_code(503);
-                    echo json_encode(["message" => "Gagal memperbarui menu."]);
-                }
-            } catch (Exception $e) {
-                http_response_code(500);
-                echo json_encode(["message" => "Error Server", "error" => $e->getMessage()]);
+        // Ambil ID dari URL (Sesuai Modul)
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        if (!empty($id) && !empty($input['nama']) && isset($input['harga'])) {
+            $nama = mysqli_real_escape_string($conn, htmlspecialchars(strip_tags($input['nama'])));
+            $harga = (int)$input['harga'];
+            $kategori = mysqli_real_escape_string($conn, htmlspecialchars(strip_tags($input['kategori'])));
+            $deskripsi = mysqli_real_escape_string($conn, htmlspecialchars(strip_tags($input['deskripsi'] ?? '')));
+            $gambar = mysqli_real_escape_string($conn, $input['gambar'] ?? '');
+
+            $sql = "UPDATE menus SET nama='$nama', harga=$harga, kategori='$kategori', 
+                    deskripsi='$deskripsi', gambar='$gambar' WHERE id=$id";
+            
+            if (mysqli_query($conn, $sql)) {
+                http_response_code(200);
+                echo json_encode(["status" => "success", "message" => "Menu diperbarui."]);
+            } else {
+                http_response_code(503);
+                echo json_encode(["status" => "error", "message" => "Gagal memperbarui."]);
             }
         } else {
             http_response_code(400);
-            echo json_encode(["message" => "Data tidak lengkap atau ID tidak valid."]);
+            echo json_encode(["status" => "error", "message" => "Data tidak lengkap / ID tidak ada."]);
         }
         break;
 
-    // ==========================================
-    // 4. DELETE - Hapus Data
-    // ==========================================
+    // ------------------------------------------
+    // DELETE - Hapus Data
+    // ------------------------------------------
     case 'DELETE':
-        // Cek ID baik dari body raw JSON atau URL query string (fallback)
-        $id = $input['id'] ?? $_GET['id'] ?? null;
+        // Ambil ID dari URL (Sesuai Modul)
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
         
         if (!empty($id)) {
-            try {
-                $query = "DELETE FROM menus WHERE id = :id";
-                $stmt = $pdo->prepare($query);
-                $stmt->bindParam(':id', $id);
-                
-                if ($stmt->execute()) {
-                    http_response_code(200);
-                    echo json_encode(["message" => "Menu berhasil dihapus."]);
-                } else {
-                    http_response_code(503);
-                    echo json_encode(["message" => "Gagal menghapus menu."]);
-                }
-            } catch (Exception $e) {
-                http_response_code(500);
-                echo json_encode(["message" => "Error Server", "error" => $e->getMessage()]);
+            $sql = "DELETE FROM menus WHERE id=$id";
+            if (mysqli_query($conn, $sql)) {
+                http_response_code(200);
+                echo json_encode(["status" => "success", "message" => "Menu dihapus."]);
+            } else {
+                http_response_code(503);
+                echo json_encode(["status" => "error", "message" => "Gagal menghapus."]);
             }
         } else {
             http_response_code(400);
-            echo json_encode(["message" => "ID Menu tidak ditemukan."]);
+            echo json_encode(["status" => "error", "message" => "ID tidak ditemukan."]);
         }
         break;
 
-    // ==========================================
-    // Handler Jika Method Tidak Dikenal
-    // ==========================================
     default:
-        http_response_code(405); // Method Not Allowed
-        echo json_encode(["message" => "Metode HTTP tidak didukung."]);
+        http_response_code(405);
+        echo json_encode(["status" => "error", "message" => "Metode HTTP tidak didukung."]);
         break;
 }
+
+// Tutup koneksi (Sesuai Modul)
+mysqli_close($conn);
 ?>
