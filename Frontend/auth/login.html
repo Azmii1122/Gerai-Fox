@@ -7,23 +7,32 @@
     <title>Gabung GeraiFox</title>
     <style>
         :root {
-            --accent-color: #6366f1;
-            /* Indigo modern */
-            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --card-bg: rgba(255, 255, 255, 0.95);
+            /* Identitas Warna Gerai.Fox yang lebih teduh & elegan */
+            --primary-dark: #CC5500;
+            /* Burnt Orange (Orange Gelap) */
+            --primary-light: #FF9500;
+            /* Orange Cerah namun lembut */
+            --accent-color: #E86A10;
+
+            --bg-main: #F4F7FE;
+            /* Biru sangat muda agar kontrasnya enak di mata */
+            --text-dark: #1B2559;
+            /* Navy gelap untuk teks utama */
+            --text-muted: #A3AED0;
+            /* Abu-abu kebiruan untuk label */
+            --input-bg: #F4F7FE;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            /* Gunakan Plus Jakarta Sans agar mirip SMKSPACE */
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
         }
 
         body {
-            background: var(--bg-gradient);
+            background: var(--bg-main);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -31,70 +40,94 @@
             padding: 20px;
         }
 
-        /* Floating Container */
+        /* Floating Container Utama */
         .main-wrapper {
             display: flex;
             width: 100%;
-            max-width: 1000px;
-            height: 650px;
-            background: var(--card-bg);
-            border-radius: 24px;
+            max-width: 900px;
+            /* Dibuat sedikit lebih compact */
+            height: 550px;
+            background: #FFFFFF;
+            border-radius: 30px;
+            /* Radius diperbesar agar lebih soft */
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            /* Shadow netral (bukan orange) */
         }
 
-        /* Sisi Kiri: Informasi (Imersif) */
+        /* --- SISI KIRI: PANEL HERO --- */
         .info-panel {
             flex: 1;
-            background: #1e293b;
-            padding: 60px;
+            /* Gradasi dari Orange Gelap ke Terang */
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            padding: 50px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             color: white;
             position: relative;
+            overflow: hidden;
         }
 
-        /* Dekorasi Lingkaran Halus */
+        /* Ornamen lingkaran dibuat sangat halus (Glow effect) */
+        .info-panel::before {
+            content: "";
+            position: absolute;
+            bottom: -100px;
+            left: -50px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+        }
+
         .info-panel::after {
             content: "";
             position: absolute;
-            top: -100px;
-            left: -100px;
-            width: 300px;
-            height: 300px;
-            background: var(--accent-color);
-            filter: blur(80px);
-            opacity: 0.2;
+            top: -50px;
+            right: -50px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.08);
+            filter: blur(40px);
             border-radius: 50%;
         }
 
         .brand-name {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 800;
-            letter-spacing: -0.5px;
-            z-index: 1;
+            letter-spacing: 2px;
+            z-index: 2;
+        }
+
+        .hero-text {
+            z-index: 2;
+            margin-top: -20px;
         }
 
         .hero-text h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            line-height: 1.2;
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.1;
             margin-bottom: 20px;
-            z-index: 1;
+            letter-spacing: -1px;
         }
 
         .hero-text p {
-            color: #94a3b8;
-            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
             line-height: 1.6;
         }
 
-        /* Sisi Kanan: Form */
+        .footer-note {
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        /* --- SISI KANAN: FORM LOGIN --- */
         .form-panel {
             flex: 1.2;
-            padding: 60px;
+            padding: 50px 60px;
             background: white;
             display: flex;
             flex-direction: column;
@@ -106,89 +139,117 @@
         }
 
         .form-header h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-main);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
             margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .form-header p {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Trik CSS: Menimpa inline-style HTML kamu agar inputnya atas-bawah, bukan kiri-kanan */
+        form>div[style] {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 20px !important;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 0;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
+        /* Style Input yang Bulat dan Bersih ala SMKSPACE */
         .form-group input {
             width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
+            padding: 16px 20px;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            /* Ujung lebih membulat */
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            background: var(--input-bg);
             transition: all 0.3s ease;
-            background: #f8fafc;
+        }
+
+        .form-group input::placeholder {
+            color: #CBD5E1;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: var(--accent-color);
             background: white;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            border-color: var(--primary-light);
+            box-shadow: 0 10px 20px rgba(232, 106, 16, 0.1);
         }
 
+        /* Tombol Masuk dengan Gradasi */
         .btn-register {
             width: 100%;
-            padding: 14px;
-            background: var(--text-main);
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 16px;
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s ease, background 0.2s ease;
-            margin-top: 10px;
+            transition: all 0.3s ease;
+            margin-top: 25px;
+            box-shadow: 0 10px 20px rgba(204, 85, 0, 0.25);
+            /* Shadow orange lembut */
         }
 
         .btn-register:hover {
-            background: #0f172a;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(204, 85, 0, 0.35);
         }
 
         .login-link {
             text-align: center;
-            margin-top: 25px;
-            font-size: 0.9rem;
+            margin-top: 30px;
+            font-size: 0.85rem;
             color: var(--text-muted);
+            font-weight: 600;
         }
 
         .login-link a {
             color: var(--accent-color);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 800;
+            margin-left: 5px;
         }
 
-        /* Responsive */
+        /* Responsif untuk layar HP */
         @media (max-width: 850px) {
             .main-wrapper {
                 flex-direction: column;
                 height: auto;
-                max-width: 500px;
+                max-width: 450px;
             }
 
             .info-panel {
                 padding: 40px;
-                min-height: 200px;
+                min-height: 250px;
+                border-radius: 30px 30px 0 0;
+                /* Hindari sudut tajam saat di HP */
             }
 
             .form-panel {
@@ -242,5 +303,6 @@
         </section>
     </main>
 </body>
+
 
 </html>

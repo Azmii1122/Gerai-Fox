@@ -6,191 +6,238 @@
     <title>Gabung GeraiFox</title>
     <style>
         :root {
-            --accent-color: #6366f1; /* Indigo modern */
-            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --card-bg: rgba(255, 255, 255, 0.95);
-        }
+    /* Identitas Warna Gerai.Fox yang teduh & elegan */
+    --primary-dark: #CC5500; 
+    --primary-light: #FF9500; 
+    --accent-color: #E86A10;
+    
+    --bg-main: #F4F7FE; 
+    --text-dark: #1B2559; 
+    --text-muted: #A3AED0; 
+    --input-bg: #F4F7FE;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; 
+}
 
-        body {
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+body {
+    background: var(--bg-main);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
 
-        /* Floating Container */
-        .main-wrapper {
-            display: flex;
-            width: 100%;
-            max-width: 1000px;
-            height: 650px;
-            background: var(--card-bg);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
+/* Floating Container Utama */
+.main-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 950px; /* Sedikit lebih lebar untuk mengakomodasi form grid */
+    height: 600px; /* Sedikit lebih tinggi untuk form daftar */
+    background: #FFFFFF;
+    border-radius: 30px; 
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); 
+}
 
-        /* Sisi Kiri: Informasi (Imersif) */
-        .info-panel {
-            flex: 1;
-            background: #1e293b;
-            padding: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            color: white;
-            position: relative;
-        }
+/* --- SISI KIRI: PANEL HERO --- */
+.info-panel {
+    flex: 1;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
 
-        /* Dekorasi Lingkaran Halus */
-        .info-panel::after {
-            content: "";
-            position: absolute;
-            top: -100px;
-            left: -100px;
-            width: 300px;
-            height: 300px;
-            background: var(--accent-color);
-            filter: blur(80px);
-            opacity: 0.2;
-            border-radius: 50%;
-        }
+/* Ornamen lingkaran halus */
+.info-panel::before {
+    content: "";
+    position: absolute;
+    bottom: -100px;
+    left: -50px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+}
 
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            z-index: 1;
-        }
+.info-panel::after {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 250px;
+    height: 250px;
+    background: rgba(255, 255, 255, 0.08);
+    filter: blur(40px);
+    border-radius: 50%;
+}
 
-        .hero-text h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            z-index: 1;
-        }
+.brand-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    z-index: 2;
+}
 
-        .hero-text p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
+.hero-text {
+    z-index: 2;
+    margin-top: -30px;
+}
 
-        /* Sisi Kanan: Form */
-        .form-panel {
-            flex: 1.2;
-            padding: 60px;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+.hero-text h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
 
-        .form-header {
-            margin-bottom: 35px;
-        }
+.hero-text p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
 
-        .form-header h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 8px;
-        }
+.footer-note {
+    z-index: 2;
+    opacity: 0.8;
+}
 
-        .form-header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
+/* --- SISI KANAN: FORM DAFTAR --- */
+.form-panel {
+    flex: 1.3; /* Beri sedikit ruang ekstra untuk form yang lebih panjang */
+    padding: 50px 60px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+.form-header {
+    margin-bottom: 30px;
+}
 
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 8px;
-        }
+.form-header h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
 
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: #f8fafc;
-        }
+.form-header p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
+.form-group {
+    margin-bottom: 15px;
+}
 
-        .btn-register {
-            width: 100%;
-            padding: 14px;
-            background: var(--text-main);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease, background 0.2s ease;
-            margin-top: 10px;
-        }
+.form-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
-        .btn-register:hover {
-            background: #0f172a;
-            transform: translateY(-2px);
-        }
+/* Style Input yang Bulat dan Bersih */
+.form-group input {
+    width: 100%;
+    padding: 14px 20px;
+    border: 2px solid transparent;
+    border-radius: 16px; 
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    font-weight: 500;
+    background: var(--input-bg);
+    transition: all 0.3s ease;
+}
 
-        .login-link {
-            text-align: center;
-            margin-top: 25px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
+.form-group input::placeholder {
+    color: #CBD5E1;
+}
 
-        .login-link a {
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 600;
-        }
+.form-group input:focus {
+    outline: none;
+    background: white;
+    border-color: var(--primary-light);
+    box-shadow: 0 10px 20px rgba(232, 106, 16, 0.1);
+}
 
-        /* Responsive */
-        @media (max-width: 850px) {
-            .main-wrapper {
-                flex-direction: column;
-                height: auto;
-                max-width: 500px;
-            }
-            .info-panel {
-                padding: 40px;
-                min-height: 200px;
-            }
-            .form-panel {
-                padding: 40px;
-            }
-        }
+/* Tombol Daftar dengan Gradasi */
+.btn-register {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    box-shadow: 0 10px 20px rgba(204, 85, 0, 0.25); 
+}
+
+.btn-register:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(204, 85, 0, 0.35);
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.login-link a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 800;
+    margin-left: 5px;
+}
+
+/* Responsif untuk layar HP */
+@media (max-width: 850px) {
+    .main-wrapper {
+        flex-direction: column;
+        height: auto;
+        max-width: 450px;
+    }
+    .info-panel {
+        padding: 40px;
+        min-height: 200px;
+        border-radius: 30px 30px 0 0; 
+    }
+    .form-panel {
+        padding: 40px;
+    }
+    /* Mematikan grid agar bersusun ke bawah di layar HP */
+    div[style*="display: grid"] {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+}
     </style>
 </head>
 <body>

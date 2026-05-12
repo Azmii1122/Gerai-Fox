@@ -26,7 +26,9 @@ if (isset($_POST['login'])) {
             header("Location: ../../Frontend/buyer/home.html");
         }
     } else {
-        echo "<script>alert('Username atau password salah!');</script>";
+        header("Location: ../../Frontend/auth/login.html");
+        echo "<script>alert('Login gagal: Periksa username dan password');</script>";
     }
 }
+
 ?>
