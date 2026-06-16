@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +9,23 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F9FAFB; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F9FAFB;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
+
 <body class="min-h-screen pb-24">
 
     <!-- Header -->
@@ -25,18 +38,22 @@
                 </span>
             </div>
             <!-- Cart Icon Header -->
-            <div class="relative cursor-pointer hover:bg-gray-100 p-2.5 rounded-full transition-all" onclick="toggleCartModal()">
+            <div class="relative cursor-pointer hover:bg-gray-100 p-2.5 rounded-full transition-all"
+                onclick="toggleCartModal()">
                 <i data-lucide="shopping-cart" class="w-5 h-5 text-gray-700"></i>
-                <span id="header-cart-count" class="absolute -top-1 -right-1 bg-[#FF6B00] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
+                <span id="header-cart-count"
+                    class="absolute -top-1 -right-1 bg-[#FF6B00] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 mt-6 space-y-8">
         <!-- Hero Banner -->
-        <div class="relative bg-gradient-to-r from-amber-500 to-[#FF6B00] rounded-3xl overflow-hidden shadow-xl min-h-[220px] flex items-center p-8 text-white">
+        <div
+            class="relative bg-gradient-to-r from-amber-500 to-[#FF6B00] rounded-3xl overflow-hidden shadow-xl min-h-[220px] flex items-center p-8 text-white">
             <div class="relative z-10 max-w-xl space-y-4">
-                <span class="bg-yellow-400 text-amber-950 font-black text-xs px-3 py-1.5 rounded-full uppercase">Makan Kenyang Hemat</span>
+                <span class="bg-yellow-400 text-amber-950 font-black text-xs px-3 py-1.5 rounded-full uppercase">Makan
+                    Kenyang Hemat</span>
                 <h1 class="text-3xl font-extrabold leading-tight">ĐÃ GIẢM NAY CÒN GIẢM HƠN!</h1>
                 <p class="text-white/90 text-sm">Diskon hingga 59% untuk pesanan di sekitar kampus.</p>
             </div>
@@ -65,32 +82,40 @@
     </main>
 
     <!-- STICKY CART BAR -->
-    <div id="sticky-cart-bar" onclick="toggleCartModal()" class="fixed bottom-6 left-4 right-4 md:left-1/2 md:right-auto md:w-[768px] md:-translate-x-1/2 bg-[#FF6B00] text-white p-4 rounded-3xl flex justify-between items-center shadow-2xl z-40 transform translate-y-32 opacity-0 transition-all duration-500 cursor-pointer">
+    <div id="sticky-cart-bar" onclick="window.location.href='checkout.html'"
+        class="fixed bottom-6 left-4 right-4 md:left-1/2 md:right-auto md:w-[768px] md:-translate-x-1/2 bg-[#FF6B00] text-white p-4 rounded-3xl flex justify-between items-center shadow-2xl z-40 transform translate-y-32 opacity-0 transition-all duration-500 cursor-pointer">
+
         <div class="flex items-center gap-4">
             <div class="bg-white/20 p-2.5 rounded-2xl relative">
                 <i data-lucide="shopping-bag" class="w-5 h-5 text-white"></i>
-                <span id="cart-badge" class="absolute -top-1 -right-1 bg-yellow-400 text-amber-950 text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                <span id="cart-badge"
+                    class="absolute -top-1 -right-1 bg-yellow-400 text-amber-950 text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center">0</span>
             </div>
             <div>
                 <p id="cart-item-count" class="font-extrabold text-sm">0 Item</p>
-                <p id="cart-merchant-label" class="text-[11px] text-white/80 font-medium">Belum ada pesanan</p>
+                <p id="cart-merchant-label" class="text-[11px] text-white/80 font-medium tracking-tight">Cek keranjang
+                    belanja kamu</p>
             </div>
         </div>
+
         <div class="flex items-center gap-3">
             <span id="cart-total-price" class="text-base font-black tracking-tight">Rp 0</span>
+            <i data-lucide="arrow-right" class="w-5 h-5 text-white"></i>
         </div>
     </div>
 
     <!-- MODAL CHECKOUT KERANJANG -->
-    <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div id="cart-modal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-6 bg-[#FF6B00] text-white flex justify-between items-center">
                 <h3 class="font-black text-lg">Keranjang HubBite</h3>
-                <button onclick="toggleCartModal()" class="bg-white/10 p-2 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="toggleCartModal()" class="bg-white/10 p-2 rounded-full"><i data-lucide="x"
+                        class="w-5 h-5"></i></button>
             </div>
             <div class="p-6 overflow-y-auto flex-1 space-y-4">
                 <div id="cart-items-container" class="space-y-3"></div>
-                
+
                 <div class="space-y-2 mt-4 border-t pt-4">
                     <label class="text-xs font-bold text-gray-400 uppercase">Metode Pengiriman</label>
                     <select id="checkout-order-mode" class="w-full border rounded-xl p-3 text-sm font-bold">
@@ -101,7 +126,8 @@
                 </div>
             </div>
             <div class="p-6 bg-gray-50 border-t flex gap-3">
-                <button onclick="processCheckout()" class="flex-1 py-3.5 bg-[#FF6B00] text-white font-bold rounded-2xl">Buat Pesanan Sekarang</button>
+                <button onclick="processCheckout()"
+                    class="flex-1 py-3.5 bg-[#FF6B00] text-white font-bold rounded-2xl">Buat Pesanan Sekarang</button>
             </div>
         </div>
     </div>
@@ -129,7 +155,7 @@
                 const json = await res.json();
                 const grid = document.getElementById('merchants-grid');
                 grid.innerHTML = '';
-                
+
                 json.data.forEach(m => {
                     grid.innerHTML += `
                         <div onclick="window.location.href='katalog.html?id=${m.merchant_id}'" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-lg transition-all">
@@ -153,7 +179,7 @@
                 const json = await res.json();
                 const grid = document.getElementById('best-sellers-grid');
                 grid.innerHTML = '';
-                
+
                 json.data.forEach(p => {
                     grid.innerHTML += `
                         <div class="bg-white rounded-3xl p-4 border border-gray-100 shadow-sm flex items-center justify-between gap-4">
@@ -171,36 +197,76 @@
         }
 
         // --- SISTEM KERANJANG GABUNGAN (API) ---
-        async function syncCart() {
-            try {
-                const res = await fetch(`${API_URL}?action=get_cart&buyer_id=1`);
-                const json = await res.json();
-                cartData = json.data;
-                renderCartUI();
-            } catch (err) { console.error(err); }
-        }
-
         async function addToCart(productId) {
             try {
                 const res = await fetch(`${API_URL}?action=add_to_cart`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ product_id: productId })
                 });
+
                 const json = await res.json();
-                
-                if (json.status === 'error') {
-                    alert(json.message); // Aturan 1 gerai
+
+                if (json.status === 'success') {
+                    // Update tampilan bar di bawah tanpa pindah halaman
+                    syncCart();
                 } else {
-                    syncCart(); // Refresh keranjang setelah sukses tambah
+                    // Muncul kalau beda gerai (Aturan GoFood)
+                    alert(json.message);
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.error("Error API:", err);
+            }
+        }
+
+        // 2. Fungsi Sinkronisasi Bar Keranjang
+        async function syncCart() {
+            try {
+                // Ambil data terbaru dari DB cart_items
+                const res = await fetch(`${API_URL}?action=get_cart`);
+                const json = await res.json();
+
+                const cartData = json.data;
+                const stickyBar = document.getElementById('sticky-cart-bar');
+                const headerCount = document.getElementById('header-cart-count');
+
+                if (!cartData || cartData.length === 0) {
+                    stickyBar.classList.add('translate-y-32', 'opacity-0');
+                    headerCount.classList.add('hidden');
+                    return;
+                }
+
+                let totalQty = 0;
+                let totalPrice = 0;
+
+                cartData.forEach(item => {
+                    totalQty += parseInt(item.quantity);
+                    totalPrice += (parseFloat(item.price) * parseInt(item.quantity));
+                });
+
+                // Update UI Bar
+                document.getElementById('cart-badge').textContent = totalQty;
+                document.getElementById('cart-item-count').textContent = totalQty + ' Item';
+                document.getElementById('cart-merchant-label').textContent = 'Pesanan dari: ' + cartData[0].store_name;
+                document.getElementById('cart-total-price').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(totalPrice);
+
+                // Update Icon di Header (Opsional)
+                headerCount.textContent = totalQty;
+                headerCount.classList.remove('hidden');
+
+                // MUNCULKAN BAR (Tanpa modal, tanpa redirect)
+                stickyBar.classList.remove('translate-y-32', 'opacity-0');
+                stickyBar.classList.add('translate-y-0');
+
+            } catch (err) {
+                console.error("Gagal sinkron keranjang:", err);
+            }
         }
 
         function renderCartUI() {
             const stickyBar = document.getElementById('sticky-cart-bar');
             const headerCount = document.getElementById('header-cart-count');
-            
+
             if (cartData.length === 0) {
                 stickyBar.classList.add('translate-y-32', 'opacity-0');
                 headerCount.classList.add('hidden');
@@ -219,7 +285,7 @@
             document.getElementById('cart-badge').textContent = totalQty;
             headerCount.textContent = totalQty;
             headerCount.classList.remove('hidden');
-            
+
             document.getElementById('cart-item-count').textContent = totalQty + ' Item';
             document.getElementById('cart-merchant-label').textContent = 'Pesan dari: ' + merchantName;
             document.getElementById('cart-total-price').textContent = formatRupiah(totalPrice);
@@ -230,14 +296,14 @@
         function toggleCartModal() {
             const modal = document.getElementById('cart-modal');
             modal.classList.toggle('hidden');
-            if(!modal.classList.contains('hidden')) renderModalItems();
+            if (!modal.classList.contains('hidden')) renderModalItems();
         }
 
         function renderModalItems() {
             const container = document.getElementById('cart-items-container');
             container.innerHTML = '';
-            
-            if(cartData.length === 0) {
+
+            if (cartData.length === 0) {
                 container.innerHTML = `<p class="text-center text-gray-500 font-bold">Keranjang Kosong</p>`;
                 return;
             }
@@ -262,7 +328,7 @@
         async function updateQty(cartId, newQty) {
             await fetch(`${API_URL}?action=update_cart`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ cart_id: cartId, quantity: newQty })
             });
             await syncCart();
@@ -272,14 +338,14 @@
         async function processCheckout() {
             if (cartData.length === 0) return;
             const mode = document.getElementById('checkout-order-mode').value;
-            
+
             const res = await fetch(`${API_URL}?action=checkout`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order_mode: mode, payment_method: 'qris' })
             });
             const json = await res.json();
-            
+
             if (json.status === 'success') {
                 alert(json.message);
                 toggleCartModal();
@@ -290,4 +356,5 @@
         }
     </script>
 </body>
+
 </html>
