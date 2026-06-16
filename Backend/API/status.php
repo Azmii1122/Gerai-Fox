@@ -7,7 +7,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 // Matikan pesan error bawaan PHP yang formatnya HTML biar nggak ngerusak JSON Javascript
 error_reporting(0);
 
-$conn = mysqli_connect("localhost", "root", "", "gerai_fox");
+include '../../db_connect.php'; // Sesuaikan path ini dengan lokasimu
 
 if (!$conn) {
     echo json_encode(["status" => "error", "message" => "Koneksi database gagal"]);
