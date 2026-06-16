@@ -15,13 +15,24 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 include '../../db_connect.php'; 
 
 // 1. Dapatkan merchant_id dari tabel merchants berdasarkan user_id session
-$user_id = (int)$_SESSION['user_id'];
-$q_merchant = mysqli_query($conn, "SELECT merchant_id FROM merchants WHERE user_id = $user_id");
+$user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+
+$query_sql = "SELECT merchant_id FROM merchants WHERE user_id = $user_id";
+$q_merchant = mysqli_query($conn, $query_sql);
+
+// PASANG CCTV: Cek apakah query gagal
+if (!$q_merchant) {
+    echo json_encode(["status" => "error", "message" => "SQL Error (Tabel Merchants): " . mysqli_error($conn)]);
+    exit;
+}
 
 if (mysqli_num_rows($q_merchant) == 0) {
     echo json_encode(["status" => "error", "message" => "Toko tidak ditemukan untuk user ini."]);
     exit;
 }
+
+$merchant_data = mysqli_fetch_assoc($q_merchant);
+$merchant_id = (int)$merchant_data['merchant_id'];
 $merchant_data = mysqli_fetch_assoc($q_merchant);
 $merchant_id = (int)$merchant_data['merchant_id'];
 
