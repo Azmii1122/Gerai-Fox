@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Gerai Fox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-orange-50 text-slate-800 font-sans p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Dashboard Penjualan</h1>
+                <p class="text-slate-500">HubBite - Gerai Fox</p>
+            </div>
+            
+            <div class="flex gap-4 items-center">
+                <button id="btn-status-warung" onclick="toggleWarung()" class="bg-white border-2 border-slate-200 hover:bg-slate-50 text-sm px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer">
+                    <span id="icon-status" class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_6px_#22c55e]"></span>
+                    <span id="text-status" class="text-slate-700">Warung Buka</span>
+                </button>
+
+                <a href="laporan.html" class="bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50 hover:shadow text-sm px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2">
+                    📊 Buka Laporan
+                </a>
+                <div class="bg-orange-500 text-white text-sm px-4 py-2 rounded-lg font-bold shadow-sm flex items-center">
+                    Hari Ini
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-6 mb-8">
+            <div class="bg-orange-500 text-white p-6 rounded-xl shadow-md">
+                <p class="font-semibold mb-1">Total Orders (Valid)</p>
+                <h2 class="text-3xl font-bold" id="stat-orders">0</h2>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-orange-100">
+                <p class="text-slate-500 font-semibold mb-1">Total Revenue</p>
+                <h2 class="text-3xl font-bold text-slate-900" id="stat-revenue">Rp 0</h2>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-orange-100">
+                <p class="text-slate-500 font-semibold mb-1">Delivered</p>
+                <h2 class="text-3xl font-bold text-slate-900" id="stat-delivered">0</h2>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-orange-100">
+                <p class="text-slate-500 font-semibold mb-1">Cancelled</p>
+                <h2 class="text-3xl font-bold text-red-500" id="stat-cancelled">0</h2>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-md border border-orange-100 mb-8">
+            <h3 class="text-xl font-bold mb-4">Tambah Pesanan Baru</h3>
+            <form id="form-tambah" onsubmit="tambahPesanan(event)" class="flex gap-4 items-end">
+                <div class="flex-1">
+                    <label class="block text-sm font-semibold text-slate-600 mb-1">Nama Customer</label>
+                    <input type="text" id="input-customer" placeholder="Contoh: Gibran" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500">
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-semibold text-slate-600 mb-1">Menu</label>
+                    <input type="text" id="input-menu" placeholder="Contoh: Nasi Bakar" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500">
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-semibold text-slate-600 mb-1">Total Harga (Rp)</label>
+                    <input type="number" id="input-harga" placeholder="Contoh: 20000" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500">
+                </div>
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                    Tambah
+                </button>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-orange-100">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-xl font-bold">Customer Order</h3>
+                <span class="text-sm text-slate-400">Data mutlak tidak dapat dihapus</span>
+            </div>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-orange-50 text-orange-800">
+                        <th class="p-4 font-semibold">ID</th>
+                        <th class="p-4 font-semibold">Customer</th>
+                        <th class="p-4 font-semibold">Menu</th>
+                        <th class="p-4 font-semibold">Tanggal</th>
+                        <th class="p-4 font-semibold">Status</th>
+                        <th class="p-4 font-semibold">Total</th>
+                        <th class="p-4 font-semibold">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <tr>
+                        <td colspan="7" class="p-4 text-center text-slate-500">Memuat data API...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost/Gerai-Fox/Backend/API/pesanan.php'; // API untuk data pesanan
+        const API_STATUS_URL = 'http://localhost/Gerai-Fox/Backend/API/status.php'; // API untuk status warung
+
+        const formatRupiah = (angka) => {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+        };
+
+        // ==========================================
+        // FITUR PESANAN (GET, POST, PUT)
+        // ==========================================
+        function loadData() {
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(res => {
+                    if (res.status === 'success') {
+                        renderTable(res.data);
+                        calculateStats(res.data);
+                    } else {
+                        alert("Gagal memuat data: " + res.message);
+                    }
+                })
+                .catch(err => console.error("Error GET:", err));
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            // PERHATIKAN: Kita tambahin 'index' di sini buat bikin nomor urut palsu
+            data.forEach((item, index) => {
+                let statusClass = '';
+                if(item.status === 'Delivered') statusClass = 'bg-green-100 text-green-700';
+                else if(item.status === 'Processed') statusClass = 'bg-yellow-100 text-yellow-700';
+                else if(item.status === 'Cancelled') statusClass = 'bg-red-100 text-red-700';
+
+                // Tombol aksi TETAP pakai item.id asli dari database biar nggak salah ubah data
+                let aksiBtns = '';
+                if(item.status === 'Processed') {
+                    aksiBtns = `
+                        <div class="flex gap-2">
+                            <button onclick="ubahStatusPesanan(${item.id}, 'Delivered')" class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-sm font-bold rounded shadow-sm transition-colors">Terima</button>
+                            <button onclick="ubahStatusPesanan(${item.id}, 'Cancelled')" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-bold rounded shadow-sm transition-colors">Batal</button>
+                        </div>
+                    `;
+                } else {
+                    aksiBtns = `<span class="text-xs text-slate-400 italic">No Action</span>`;
+                }
+
+                // Kita bikin variabel nomor urut (karena index mulai dari 0, kita tambah 1)
+                let nomorUrut = index + 1;
+
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-slate-50 hover:bg-slate-50';
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-orange-500">${nomorUrut}</td> <td class="p-4 font-semibold">${item.customer_name}</td>
+                    <td class="p-4">${item.menu_name}</td>
+                    <td class="p-4 text-slate-500">${item.order_date}</td>
+                    <td class="p-4"><span class="px-2 py-1 rounded-full text-xs font-bold ${statusClass}">${item.status}</span></td>
+                    <td class="p-4 font-bold text-slate-700">${formatRupiah(item.total_price)}</td>
+                    <td class="p-4">${aksiBtns}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function calculateStats(data) {
+            let totalOrders = 0; let totalRevenue = 0; let delivered = 0; let cancelled = 0;
+            data.forEach(item => {
+                if (item.status !== 'Cancelled') {
+                    totalOrders++; 
+                    if (item.status === 'Delivered') {
+                        totalRevenue += parseFloat(item.total_price); // Hanya dihitung jika Delivered
+                    }
+                }
+                if (item.status === 'Delivered') delivered++;
+                if (item.status === 'Cancelled') cancelled++;
+            });
+            document.getElementById('stat-orders').innerText = totalOrders;
+            document.getElementById('stat-revenue').innerText = formatRupiah(totalRevenue);
+            document.getElementById('stat-delivered').innerText = delivered;
+            document.getElementById('stat-cancelled').innerText = cancelled;
+        }
+
+        function ubahStatusPesanan(idPesanan, statusBaru) {
+            let pesanTanya = statusBaru === 'Delivered' 
+                ? "Tandai pesanan ini selesai dan masukkan ke Total Revenue?" 
+                : "Yakin ingin membatalkan pesanan ini?";
+
+            if (confirm(pesanTanya)) {
+                fetch(API_URL, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: idPesanan, status: statusBaru })
+                })
+                .then(response => response.json())
+                .then(res => {
+                    if (res.status === 'success') {
+                        loadData(); 
+                    } else {
+                        alert("Gagal membatalkan: " + res.message);
+                    }
+                })
+                .catch(err => console.error("Error PUT:", err));
+            }
+        }
+
+        function tambahPesanan(event) {
+            event.preventDefault(); 
+            const customer = document.getElementById('input-customer').value;
+            const menu = document.getElementById('input-menu').value;
+            const harga = document.getElementById('input-harga').value;
+
+            const newData = {
+                customer_name: customer,
+                menu_name: menu,
+                total_price: harga,
+                payment_method: 'Tunai'
+            };
+
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newData)
+            })
+            .then(response => response.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    alert(res.message);
+                    document.getElementById('form-tambah').reset(); 
+                    loadData(); 
+                } else {
+                    alert("Gagal menambah data: " + res.message);
+                }
+            })
+            .catch(err => console.error("Error POST:", err));
+        }
+
+        // ==========================================
+        // FITUR STATUS WARUNG (GET, PUT)
+        // ==========================================
+        let currentStatus = 'Buka'; 
+
+        function loadStatusWarung() {
+            fetch(API_STATUS_URL)
+                .then(response => response.json())
+                .then(res => {
+                    if (res.status === 'success') {
+                        currentStatus = res.status_warung;
+                        updateStatusUI(currentStatus);
+                    }
+                })
+                .catch(err => console.error("Error Get Status:", err));
+        }
+
+        function toggleWarung() {
+            const statusBaru = (currentStatus === 'Buka') ? 'Tutup' : 'Buka';
+
+            fetch(API_STATUS_URL, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status_warung: statusBaru })
+            })
+            .then(response => response.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    currentStatus = statusBaru; 
+                    updateStatusUI(currentStatus); 
+                } else {
+                    alert("Gagal mengubah status di database");
+                }
+            })
+            .catch(err => console.error("Error PUT Status:", err));
+        }
+
+        function updateStatusUI(status) {
+            const icon = document.getElementById('icon-status');
+            const text = document.getElementById('text-status');
+
+            if (status === 'Buka') {
+                icon.className = 'w-3 h-3 rounded-full bg-green-500 shadow-[0_0_6px_#22c55e] transition-all';
+                text.innerText = 'Warung Buka';
+                text.className = 'text-slate-700';
+            } else {
+                icon.className = 'w-3 h-3 rounded-full bg-slate-400 transition-all';
+                text.innerText = 'Warung Tutup';
+                text.className = 'text-slate-400';
+            }
+        }
+
+        // Jalankan kedua fungsi saat web pertama kali dibuka
+        window.onload = function() {
+            loadData();
+            loadStatusWarung();
+        };
+    </script>
+</body>
+</html>
