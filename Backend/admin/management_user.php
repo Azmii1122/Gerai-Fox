@@ -7,7 +7,59 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
 }
 
 include '../db_connect.php';
+
+$message = "";
+$messageType = "";
+
+// ==========================================
+// 1. HANDLE DELETE USER
+// ==========================================
+if (isset($_POST['delete_user'])) {
+    $id = (int) $_POST['delete_id'];
+    $query = "DELETE FROM users WHERE user_id = $id";
+    if (mysqli_query($conn, $query)) {
+        $message = "User berhasil dihapus!";
+        $messageType = "success";
+    } else {
+        $message = "Gagal menghapus user: " . mysqli_error($conn);
+        $messageType = "error";
+    }
+}
+
+// ==========================================
+// 2. HANDLE ADD & EDIT USER
+// ==========================================
+if (isset($_POST['save_user'])) {
+    $id = isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0;
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $role = mysqli_real_escape_string($conn, $_POST['role']);
+    $password = $_POST['password'];
+
+    if ($id > 0) {
+        // UPDATE
+        if (!empty($password)) {
+            $pass = hash('sha256', $password);
+            $query = "UPDATE users SET email='$email', username='$username', password='$pass', role='$role' WHERE user_id=$id";
+        } else {
+            $query = "UPDATE users SET email='$email', username='$username', role='$role' WHERE user_id=$id";
+        }
+    } else {
+        // INSERT
+        $pass = hash('sha256', $password);
+        $query = "INSERT INTO users (username, email, password, role) VALUES ('$username', '$email', '$pass', '$role')";
+    }
+    
+    if (mysqli_query($conn, $query)) {
+        $message = "Data berhasil disimpan!";
+        $messageType = "success";
+    } else {
+        $message = "Gagal menyimpan data: " . mysqli_error($conn);
+        $messageType = "error";
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -15,7 +67,6 @@ include '../db_connect.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola User - Gerai.Fox Admin</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
         rel="stylesheet">
     <style>
@@ -226,7 +277,7 @@ include '../db_connect.php';
             color: #4318FF;
         }
 
-        .badge-merchant {
+        .badge-seller {
             background: #E6F9F0;
             color: #05CD99;
         }
@@ -292,8 +343,7 @@ include '../db_connect.php';
         <nav class="nav-links">
             <a href="dashboard.php"><span>📊</span> Dashboard</a>
             <a href="management_user.php" class="active"><span>👥</span> Kelola User</a>
-            <a href="../auth-system/logout.php" style="margin-top:auto; color: var(--danger);"><span>🚪</span>
-                Logout</a>
+            <a href="../auth-system/logout.php" style="margin-top:auto; color: var(--danger);"><span>🚪</span> Logout</a>
         </nav>
     </aside>
 
@@ -303,18 +353,18 @@ include '../db_connect.php';
             <p style="color: var(--text-muted); font-size: 14px;">Tambah, edit, atau hapus akses pengguna sistem.</p>
         </div>
 
-        <!-- Form Section -->
         <div class="glass-card">
             <h3 class="form-title" id="formtitle">Tambah User Baru</h3>
-            <div id="alert-container"></div>
+            
+            <?php if (!empty($message)): ?>
+                <div class="alert <?= $messageType == 'success' ? 'alert-success' : 'alert-error'; ?>">
+                    <?= $message; ?>
+                </div>
+            <?php endif; ?>
 
-            <form id="userForm">
-                <input type="hidden" id="userId" name="id">
+            <form method="POST" action="" id="userForm">
+                <input type="hidden" id="userId" name="user_id">
                 <div class="grid-inputs">
-                    <div class="input-group">
-                        <label>Nama Lengkap</label>
-                        <input type="text" id="nama" name="nama" placeholder="Contoh: Habib Azmi" required>
-                    </div>
                     <div class="input-group">
                         <label>Email</label>
                         <input type="email" id="email" name="email" placeholder="email@contoh.com" required>
@@ -332,17 +382,16 @@ include '../db_connect.php';
                         <select id="role" name="role" required>
                             <option value="">Pilih Role</option>
                             <option value="buyer">Pembeli (Buyer)</option>
-                            <option value="merchant">Pedagang (Merchant)</option>
+                            <option value="seller">Pedagang (Merchant)</option>
+                            <option value="admin">Admin</option>
                         </select>
                     </div>
                 </div>
-                <button type="submit" id="btnSubmit" class="btn btn-primary">Simpan User</button>
-                <button type="button" onclick="resetForm()" id="btnCancel" class="btn btn-cancel"
-                    style="display:none;">Batal</button>
+                <button type="submit" name="save_user" id="btnSubmit" class="btn btn-primary">Simpan User</button>
+                <button type="button" onclick="cancelEdit()" id="btnCancel" class="btn btn-cancel" style="display:none;">Batal</button>
             </form>
         </div>
 
-        <!-- Table Section -->
         <div class="glass-card">
             <h3 class="form-title">Daftar Pengguna Terdaftar</h3>
             <div class="table-container">
@@ -357,7 +406,38 @@ include '../db_connect.php';
                         </tr>
                     </thead>
                     <tbody id="userTableBody">
-                        <!-- Data dikelola oleh JS -->
+                        <?php
+                        // Memanggil data langsung dari Database menggunakan PHP
+                        $query = "SELECT * FROM users ORDER BY user_id";
+                        $result = mysqli_query($conn, $query);
+
+                        if (mysqli_num_rows($result) > 0) {
+                            while ($row = mysqli_fetch_assoc($result)): 
+                                // Menyesuaikan warna badge berdasarkan role
+                                $roleClass = ($row['role'] == 'buyer') ? 'badge-buyer' : 'badge-seller';
+                        ?>
+                        <tr>
+                            <td>#<?= $row['user_id']; ?></td>
+                            <td>
+                                <div style="font-size:12px; color:var(--text-muted);"><?= htmlspecialchars($row['email']); ?></div>
+                            </td>
+                            <td><code style="background:#F4F7FE; padding:4px 8px; border-radius:5px;"><?= htmlspecialchars($row['username']); ?></code></td>
+                            <td><span class="role-badge <?= $roleClass; ?>"><?= ucfirst($row['role']); ?></span></td>
+                            <td>
+                                <button type="button" class="action-btn edit-btn" onclick="editUser(<?= $row['user_id']; ?>, '<?= addslashes($row['username']); ?>', '<?= addslashes($row['email']); ?>', '<?= $row['role']; ?>')">Edit</button>
+                                
+                                <form method="POST" action="" style="display:inline-block; margin:0;">
+                                    <input type="hidden" name="delete_id" value="<?= $row['user_id']; ?>">
+                                    <button type="submit" name="delete_user" class="action-btn delete-btn" onclick="return confirm('Yakin hapus data ini?');">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php 
+                            endwhile;
+                        } else {
+                            echo '<tr><td colspan="5" style="text-align:center; padding:20px;">Belum ada user terdaftar.</td></tr>';
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -365,146 +445,35 @@ include '../db_connect.php';
     </main>
 
     <script>
-        const API_URL = '../api/user.php';
+        function editUser(id, username, email, role) {
+            document.getElementById('userId').value = id;
+            document.getElementById('username').value = username;
+            document.getElementById('email').value = email;
+            document.getElementById('role').value = role;
+            
+            // Password tidak wajib saat Edit
+            document.getElementById('password').required = false;
+            document.getElementById('password').placeholder = "Kosongkan jika tidak ganti";
 
-        document.addEventListener('DOMContentLoaded', getUsers);
+            document.getElementById('formtitle').textContent = 'Edit Pengguna';
+            document.getElementById('btnSubmit').textContent = 'Update User';
+            document.getElementById('btnCancel').style.display = 'inline-block';
 
-        function showAlert(message, type = 'success') {
-            const container = document.getElementById('alert-container');
-            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
-            container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
-            setTimeout(() => container.innerHTML = '', 3000);
+            // Scroll otomatis ke atas
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function resetForm() {
+        function cancelEdit() {
             document.getElementById('userForm').reset();
             document.getElementById('userId').value = '';
+            
+            // Kembalikan kewajiban password
+            document.getElementById('password').required = true;
+            document.getElementById('password').placeholder = "••••••••";
+
             document.getElementById('formtitle').textContent = 'Tambah User Baru';
             document.getElementById('btnSubmit').textContent = 'Simpan User';
             document.getElementById('btnCancel').style.display = 'none';
-            document.getElementById('password').required = true;
-        }
-
-        async function getUsers() {
-            const tbody = document.getElementById('userTableBody');
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Memuat data pengguna...</td></tr>';
-
-            try {
-                const response = await fetch(API_URL);
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    renderUserTable(result.data);
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                showAlert('Gagal terhubung ke API', 'error');
-            }
-        }
-
-        function renderUserTable(users) {
-            const tbody = document.getElementById('userTableBody');
-            tbody.innerHTML = '';
-
-            if (users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Belum ada user terdaftar.</td></tr>';
-                return;
-            }
-
-            users.forEach(user => {
-                const roleClass = user.role === 'buyer' ? 'badge-buyer' : 'badge-merchant';
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>#${user.id}</td>
-                    <td>
-                        <div style="font-weight:700;">${user.nama}</div>
-                        <div style="font-size:12px; color:var(--text-muted);">${user.email}</div>
-                    </td>
-                    <td><code style="background:#F4F7FE; padding:4px 8px; border-radius:5px;">${user.username}</code></td>
-                    <td><span class="role-badge ${roleClass}">${user.role}</span></td>
-                    <td>
-                        <button class="action-btn edit-btn" onclick="editUser(${user.id})">Edit</button>
-                        <button class="action-btn delete-btn" onclick="deleteUser(${user.id})">Hapus</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        document.getElementById('userForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            const method = data.id ? 'PUT' : 'POST';
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: method, // Dinamis sesuai kebutuhan
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    showAlert(result.message);
-                    resetForm();
-                    getUsers();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                showAlert('Gagal memproses data', 'error');
-            }
-        });
-
-        async function editUser(id) {
-            try {
-                const response = await fetch(`${API_URL}?id=${id}`);
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    const user = result.data;
-                    document.getElementById('userId').value = user.id;
-                    document.getElementById('email').value = user.email;
-                    document.getElementById('nama').value = user.nama;
-                    document.getElementById('username').value = user.username;
-                    document.getElementById('role').value = user.role;
-                    document.getElementById('password').required = false;
-                    document.getElementById('password').placeholder = "Kosongkan jika tidak ingin ganti";
-
-                    document.getElementById('formtitle').textContent = 'Edit Pengguna';
-                    document.getElementById('btnSubmit').textContent = 'Update User';
-                    document.getElementById('btnCancel').style.display = 'inline-block';
-
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            } catch (error) {
-                showAlert('Gagal mengambil detail user', 'error');
-            }
-        }
-
-        async function deleteUser(id) {
-            if (!confirm('Data user akan dihapus permanen. Lanjutkan?')) return;
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id })
-                });
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    showAlert(result.message);
-                    getUsers();
-                } else {
-                    showAlert(result.message, 'error');
-                }
-            } catch (error) {
-                showAlert('Gagal menghapus user', 'error');
-            }
         }
     </script>
 </body>

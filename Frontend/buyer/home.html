@@ -1,119 +1,548 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerai.Fox - Food Platform</title>
+    <title>HubBite - Cari Makan di Kampus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF7A00;
+            --primary-hover: #E56E00;
+            --primary-light: #FFF2E5;
+            --bg-body: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-muted: #6B7280;
+            --border-color: #E5E7EB;
+            
+            /* Crowd Status Colors */
+            --crowd-hijau: #10B981;
+            --crowd-kuning: #F59E0B;
+            --crowd-merah: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            padding-bottom: 60px;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background-color: var(--card-bg);
+            padding: 16px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #F3F4F6;
+            padding: 10px 20px;
+            border-radius: 50px;
+            width: 400px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--primary);
+            background: var(--card-bg);
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-left: 10px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        .badge-count {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* HERO BANNER */
+        .hero {
+            background: linear-gradient(100deg, #FF912A 0%, #FF6600 100%);
+            border-radius: 24px;
+            padding: 40px 50px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-text {
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+
+        .hero-text p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .btn-order-now {
+            background: var(--card-bg);
+            color: var(--primary);
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+        }
+        .btn-order-now:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .hero-image {
+            font-size: 120px;
+            z-index: 2;
+            filter: drop-shadow(0 20px 20px rgba(0,0,0,0.2));
+        }
+
+        /* KATEGORI PILLS */
+        .categories {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .categories::-webkit-scrollbar { display: none; }
+
+        .category-pill {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+        .category-pill.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .category-pill:hover:not(.active) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* SECTION HEADER */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .view-all {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* GRID SYSTEM */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        /* CARDS UMUM */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+            border-color: #D1D5DB;
+        }
+
+        /* MERCHANT CARD */
+        .merchant-cover {
+            height: 140px;
+            background: #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            position: relative;
+        }
+        .merchant-info {
+            padding: 16px;
+        }
+        .merchant-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .merchant-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .crowd-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* PRODUCT CARD */
+        .product-cover {
+            height: 180px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+        .product-info {
+            padding: 16px;
+        }
+        .product-info h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        .product-store {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .price {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .btn-add {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-add:hover {
+            background: var(--primary-hover);
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-weight: 500;
+            background: white;
+            border-radius: 16px;
+            border: 1px dashed var(--border-color);
+        }
+    </style>
 </head>
-<style>
-    :root {
-        --accent-color: #6366f1;
-        --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        --text-main: #1e293b;
-        --text-muted: #64748b;
-        --card-bg: rgba(255, 255, 255, 0.95);
-        --nav-hover: #FF3105;
-    }
-
-    html body {
-        background-color: #858585;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
-
-    .navbar {
-        position: sticky;
-        /* atau sticky */
-        top: 0;
-        left: 0;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        z-index: 1000;
-    }
-
-    .nav-container {
-        background-color: #ffffff;
-        width: 90%;
-        /* Lebar navbar, bisa diatur sesuai selera */
-        max-width: 1200px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 30px 30px;
-        margin-top: 0px;
-
-        /* Efek Floating: Mepet atas, radius hanya di bawah */
-        border-bottom-left-radius: 20px;
-        border-bottom-right-radius: 20px;
-
-        /* Memberikan sedikit bayangan agar terlihat 'floating' */
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-
-
-    .nav-links {
-        list-style: none;
-        display: flex;
-        gap: 45px;
-        margin: 0;
-        padding: 0;
-    }
-
-    .nav-links a {
-        text-decoration: none;
-        color: #333;
-        font-weight: 500;
-    }
-
-    .nav-icons {
-        display: flex;
-        gap: 15px;
-    }
-
-    /* Style untuk lingkaran placeholder */
-    .circle {
-        background-color: #b0b0b0;
-        border-radius: 50%;
-    }
-
-    .logo {
-        width: 45px;
-        height: 45px;
-        margin-left: 40px;
-    }
-
-    .icon {
-        width: 40px;
-        height: 40px;
-        margin-right: 20px;
-    }
-</style>
-
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="circle logo"></div>
 
-                <ul class="nav-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Explore</a></li>
-                    <li><a href="#">Discount</a></li>
-                    <li><a href="#">Orders</a></li>
-                    <li><a href="#">About Us</a></li>
-                </ul>
-
-                <div class="nav-icons">
-                    <div class="circle icon"></div>
-                    <div class="circle icon"></div>
-                </div>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="#" class="brand">🍔 HubBite</a>
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="Mau makan apa di kampus hari ini?">
             </div>
-        </nav>
-    </header>
-</body>
+        </div>
+        <div class="nav-right">
+            <button class="icon-btn">
+                🛒
+                <span class="badge-count">2</span>
+            </button>
+            <button class="icon-btn">
+                🔔
+                <span class="badge-count">1</span>
+            </button>
+            <div class="user-profile">
+                <div class="avatar">👨‍🎓</div>
+                <span>Mahasiswa</span>
+            </div>
+        </div>
+    </nav>
 
+    <main class="container">
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Cari Makan di Kampus<br>Gak Pake Ribet!</h1>
+                <p>Pesan sekarang, ambil langsung atau diantar ke tempatmu tanpa perlu antre panjang di jam istirahat.</p>
+                <a href="#produk-section" class="btn-order-now">Pesan Sekarang</a>
+            </div>
+            <div class="hero-image">🍜</div>
+        </section>
+
+        <section class="categories">
+            <button class="category-pill active">Semua</button>
+            <button class="category-pill">🍗 Ayam</button>
+            <button class="category-pill">🍚 Nasi</button>
+            <button class="category-pill">🥤 Minuman</button>
+            <button class="category-pill">🍟 Snack</button>
+            <button class="category-pill">🍜 Mie</button>
+        </section>
+
+        <div class="section-header">
+            <h2>Warung Buka Saat Ini</h2>
+            <a href="#" class="view-all">Lihat Semua</a>
+        </div>
+        <div class="grid-layout" id="merchantContainer">
+            <div class="empty-state">Mencari warung terdekat... ⏳</div>
+        </div>
+
+        <div class="section-header" id="produk-section">
+            <h2>Rekomendasi Menu</h2>
+            <a href="#" class="view-all">Lihat Semua</a>
+        </div>
+        <div class="grid-layout" id="productContainer">
+            <div class="empty-state">Memuat menu lezat untukmu... ⏳</div>
+        </div>
+    </main>
+
+    <script>
+        const storeCovers = ['🏪', '🍳', '🍽️', '🎪', '🍲'];
+        const foodImages = ['🍛', '🍗', '🍜', '🍣', '🍱', '🥤', '🥗'];
+
+        async function loadHomeData() {
+            try {
+                // Fetch ke API yang sudah kita buat sebelumnya
+                const response = await fetch('http://localhost/Gerai-Fox/Backend/API/api_home.php'); 
+                const data = await response.json();
+
+                if(data.status === 'success') {
+                    renderMerchants(data.merchants);
+                    renderProducts(data.products);
+                } else {
+                    showError("Gagal mengambil data dari server.");
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                showError("Koneksi terputus. Pastikan server XAMPP menyala.");
+            }
+        }
+
+        function renderMerchants(merchants) {
+            const container = document.getElementById('merchantContainer');
+            container.innerHTML = ''; 
+
+            if(merchants.length === 0) {
+                container.innerHTML = '<div class="empty-state">Belum ada warung yang buka saat ini 😔</div>';
+                return;
+            }
+
+            merchants.forEach(m => {
+                // Logika Warna Indikator Keramaian
+                let bgColor = 'var(--crowd-hijau)';
+                let crowdText = 'Sepi Antrean';
+                
+                if(m.live_crowd_status === 'kuning') { 
+                    bgColor = 'var(--crowd-kuning)'; 
+                    crowdText = 'Mulai Ramai'; 
+                }
+                if(m.live_crowd_status === 'merah') { 
+                    bgColor = 'var(--crowd-merah)'; 
+                    crowdText = 'Antre Panjang'; 
+                }
+
+                const randomEmoji = storeCovers[Math.floor(Math.random() * storeCovers.length)];
+                // Mockup data tambahan untuk mempercantik UI sesuai desain
+                const randomRating = (Math.random() * (5.0 - 4.0) + 4.0).toFixed(1);
+
+                const card = `
+                    <div class="card">
+                        <div class="merchant-cover">${randomEmoji}</div>
+                        <div class="merchant-info">
+                            <h3>${m.store_name}</h3>
+                            <div class="merchant-meta">
+                                <span>⭐ ${randomRating}</span>
+                                <span>•</span>
+                                <span>Kantin Kampus</span>
+                            </div>
+                            <span class="crowd-badge" style="background-color: ${bgColor};">${crowdText}</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        function renderProducts(products) {
+            const container = document.getElementById('productContainer');
+            container.innerHTML = '';
+
+            if(products.length === 0) {
+                container.innerHTML = '<div class="empty-state">Belum ada menu yang tersedia 😔</div>';
+                return;
+            }
+
+            products.forEach(p => {
+                let hargaRp = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(p.price);
+                const randomFood = foodImages[Math.floor(Math.random() * foodImages.length)];
+
+                const card = `
+                    <div class="card">
+                        <div class="product-cover">${randomFood}</div>
+                        <div class="product-info">
+                            <h3>${p.name}</h3>
+                            <div class="product-store">📍 ${p.store_name}</div>
+                            <div class="product-footer">
+                                <span class="price">${hargaRp}</span>
+                                <button class="btn-add" onclick="tambahKeKeranjang(${p.product_id}, '${p.name}')" title="Tambah ke keranjang">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        function showError(msg) {
+            document.getElementById('merchantContainer').innerHTML = `<div class="empty-state" style="color:var(--crowd-merah);">${msg}</div>`;
+            document.getElementById('productContainer').innerHTML = `<div class="empty-state" style="color:var(--crowd-merah);">${msg}</div>`;
+        }
+
+        function tambahKeKeranjang(id, namaMenu) {
+            alert(`${namaMenu} berhasil ditambahkan ke keranjang! 🛒`);
+        }
+
+        window.onload = loadHomeData;
+    </script>
+</body>
 </html>
