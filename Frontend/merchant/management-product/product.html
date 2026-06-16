@@ -720,11 +720,10 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <i class="fa-solid fa-fox fa-lg"></i>
-                <h2>Gerai Fox</h2>
+                <h2>HubBite</h2>
             </div>
             <nav class="sidebar-nav">
                 <a href="#" class="nav-link">
@@ -742,7 +741,6 @@
             </nav>
         </aside>
 
-        <!-- MAIN CONTENT -->
         <main class="main-wrapper">
             <header class="top-header">
                 <div class="mobile-brand">
@@ -797,7 +795,6 @@
         </main>
     </div>
 
-    <!-- MODAL FORM -->
     <div id="formModal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -817,7 +814,7 @@
                     
                     <div class="form-row">
                         <div>
-                            <label class="form-label">Harga (Rp) <span style="color: var(--red-500)">*</span></label>
+                            <label class="form-label">Harga <span style="color: var(--red-500)">*</span></label>
                             <input type="number" id="harga" class="form-control" required min="0" placeholder="25000">
                         </div>
                         <div>
@@ -862,7 +859,6 @@
         </div>
     </div>
 
-    <!-- MODAL HAPUS -->
     <div id="deleteModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 24rem; text-align: center;">
             <div class="modal-body" style="padding: 2rem 1.5rem;">
@@ -884,11 +880,9 @@
     <div id="toastContainer" class="toast-container"></div>
 
     <script>
-        // ==========================================
-        // KONFIGURASI FETCH API (Sesuai Modul)
-        // ==========================================
-        const apiUrl = 'http://localhost/asessment2/Gerai-Fox/Backend/merchant-system/management-product/product.php';
-        const API_KEY = "12345-RAHASIA-WEB"; // API Key Sesuai Modul
+ 
+        const apiUrl = 'http://localhost/Gerai-Fox/Backend/merchant-system/management-product/product.php';
+        const API_KEY = "12345-RAHASIA-WEB"; 
         let menus = [];
         let itemToDelete = null;
 
@@ -900,19 +894,15 @@
             }).format(angka);
         };
 
-        // 1. GET: Menampilkan Data
         async function fetchMenus() {
             showLoading(true);
             try {
-                // Menambahkan API Key di URL (Sesuai Modul)
                 const response = await fetch(`${apiUrl}?api_key=${API_KEY}`, { method: 'GET' });
                 const responseData = await response.json(); 
                 
                 if (!response.ok) {
                     throw new Error(responseData.message || 'API Error');
                 }
-                
-                // Mengambil data dari key "data" sesuai format backend Modul
                 menus = responseData.data ? responseData.data : responseData;
             } catch (error) {
                 console.error("Fetch Error:", error);
@@ -923,7 +913,6 @@
             }
         }
 
-        // 2 & 3. POST / PUT: Menambahkan dan Mengedit Data
         async function handleFormSubmit(e) {
             e.preventDefault();
             const fileInput = document.getElementById('gambarFile');
@@ -946,7 +935,6 @@
                 const isEdit = id !== '';
                 const methodType = isEdit ? 'PUT' : 'POST';
                 
-                // Tentukan Method URL: Jika ID ada, sertakan id dan api key (Sesuai Modul)
                 const targetUrl = isEdit 
                     ? `${apiUrl}?id=${id}&api_key=${API_KEY}` 
                     : `${apiUrl}?api_key=${API_KEY}`;
@@ -992,11 +980,9 @@
             }
         }
 
-        // 4. DELETE: Menghapus Data
         async function executeDelete() {
             if (!itemToDelete) return;
             try {
-                // Menambahkan id dan api key di URL (Sesuai Modul)
                 const targetUrl = `${apiUrl}?id=${itemToDelete}&api_key=${API_KEY}`;
                 const response = await fetch(targetUrl, {
                     method: 'DELETE'
@@ -1146,8 +1132,6 @@
             );
             renderGrid(filtered);
         });
-
-        // Load data saat halaman pertama kali dibuka
         window.onload = fetchMenus;
     </script>
 </body>

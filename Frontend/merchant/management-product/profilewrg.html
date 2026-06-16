@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Profil - HubBite</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --fox-50: #fff3e0; --fox-100: #ffe0b2; --fox-500: #f97316; --fox-600: #ea580c; 
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; 
+            --slate-400: #94a3b8; --slate-500: #64748b; --slate-700: #334155; --slate-800: #1e293b; 
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { color: var(--slate-800); background-color: var(--slate-50); overflow: hidden; }
+        
+        /* Layout Dasar */
+        .app-container { display: flex; height: 100vh; }
+        .sidebar { width: 256px; background-color: #fff; border-right: 1px solid var(--slate-200); display: flex; flex-direction: column; z-index: 10; }
+        .sidebar-header { height: 64px; display: flex; align-items: center; padding: 0 1.5rem; border-bottom: 1px solid var(--slate-100); gap: 0.5rem; color: var(--fox-500); }
+        .sidebar-header h2 { font-size: 1.25rem; font-weight: 700; color: var(--slate-800); }
+        .sidebar-nav { padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .nav-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.625rem 0.75rem; border-radius: 0.5rem; color: var(--slate-500); text-decoration: none; font-weight: 500; transition: all 0.2s; }
+        .nav-link:hover, .nav-link.active { color: var(--fox-600); background-color: var(--fox-50); }
+        
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .top-header { height: 64px; background-color: #fff; border-bottom: 1px solid var(--slate-200); display: flex; align-items: center; padding: 0 1.5rem; }
+        .header-title { font-size: 1.125rem; font-weight: 600; }
+        
+        /* Area Konten Profil */
+        .content-body { flex: 1; overflow-y: auto; padding: 2rem; }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-size: 1.5rem; font-weight: 700; color: var(--slate-800); }
+        .page-header p { font-size: 0.875rem; color: var(--slate-500); margin-top: 0.25rem; }
+        
+        .profile-container { display: grid; grid-template-columns: 1fr; gap: 2rem; max-width: 1000px; }
+        @media (min-width: 1024px) { .profile-container { grid-template-columns: 300px 1fr; } }
+        
+        /* Card Kiri (Foto) */
+        .card { background: #fff; border-radius: 1rem; border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); overflow: hidden; }
+        .photo-card { padding: 2rem; text-align: center; }
+        .photo-preview { width: 160px; height: 160px; border-radius: 50%; background-color: var(--slate-100); border: 4px solid white; box-shadow: var(--shadow-md); margin: 0 auto 1.5rem; overflow: hidden; position: relative; }
+        .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-upload { display: inline-block; background: var(--fox-50); color: var(--fox-600); border: 1px solid var(--fox-100); padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-upload:hover { background: var(--fox-100); }
+        .file-input { display: none; }
+        
+        /* Card Kanan (Form) */
+        .form-card { padding: 2rem; }
+        .form-card h3 { font-size: 1.125rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--slate-100); padding-bottom: 0.75rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+        @media (min-width: 640px) { .form-grid.two-cols { grid-template-columns: 1fr 1fr; } }
+        
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-label { font-size: 0.875rem; font-weight: 500; color: var(--slate-700); }
+        .form-control { padding: 0.625rem 1rem; border: 1px solid var(--slate-300); border-radius: 0.5rem; outline: none; font-size: 0.875rem; transition: all 0.2s; }
+        .form-control:focus { border-color: var(--fox-500); box-shadow: 0 0 0 3px var(--fox-50); }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+        
+        .btn-save { background: var(--fox-500); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; }
+        .btn-save:hover { background: var(--fox-600); }
+        .btn-save:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* Toast & Loading */
+        .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; display: flex; flex-direction: column; gap: 0.75rem; }
+        .toast { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: white; border-radius: 0.75rem; box-shadow: var(--shadow-md); animation: slideInUp 0.3s ease forwards; border-left: 4px solid; }
+        .toast.success { border-color: #10b981; }
+        .toast.error { border-color: #ef4444; }
+        @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .loading-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 20; border-radius: 1rem; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-fox fa-lg"></i><h2>HubBite</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-link"><i class="fa-solid fa-chart-pie w-5"></i> Dashboard</a>
+                <a href="product.html" class="nav-link"><i class="fa-solid fa-book-open w-5"></i> Katalog Menu</a>
+                <a href="#" class="nav-link"><i class="fa-solid fa-receipt w-5"></i> Pesanan</a>
+                <a href="#" class="nav-link active"><i class="fa-solid fa-gear w-5"></i> Pengaturan</a>
+            </nav>
+        </aside>
+
+        <main class="main-wrapper">
+            <header class="top-header">
+                <h1 class="header-title">Pengaturan Identitas</h1>
+            </header>
+
+            <div class="content-body">
+                <div class="page-header">
+                    <h1>Profil Warung Anda</h1>
+                    <p>Kelola identitas, kontak, dan lokasi warung agar mudah ditemukan oleh mahasiswa.</p>
+                </div>
+
+                <div class="profile-container">
+                    <div class="card photo-card" style="position: relative;">
+                        <div id="loadingPhoto" class="loading-overlay"><i class="fa-solid fa-spinner fa-spin fa-2x" style="color: var(--fox-500)"></i></div>
+                        <div class="photo-preview">
+                            <img id="previewImage" src="https://placehold.co/400x400/e2e8f0/64748b?text=Upload+Foto" alt="Foto Warung">
+                        </div>
+                        <h4 style="margin-bottom: 0.5rem; font-size: 1rem;" id="displayName">Nama Warung</h4>
+                        <p style="font-size: 0.75rem; color: var(--slate-400); margin-bottom: 1.5rem;">Format JPG/PNG. Maks 2MB.</p>
+                        
+                        <label class="btn-upload">
+                            <i class="fa-solid fa-camera"></i> Ganti Foto
+                            <input type="file" class="file-input" id="fotoInput" accept="image/*" onchange="handleImageUpload(event)">
+                        </label>
+                    </div>
+
+                    <div class="card form-card" style="position: relative;">
+                        <div id="loadingForm" class="loading-overlay"><i class="fa-solid fa-spinner fa-spin fa-2x" style="color: var(--fox-500)"></i></div>
+                        <h3>Informasi Dasar</h3>
+                        <form id="profileForm" onsubmit="saveProfile(event)">
+                            <div class="form-grid two-cols">
+                                <div class="form-group">
+                                    <label class="form-label">Nama Warung</label>
+                                    <input type="text" id="nama_warung" class="form-control" required placeholder="Contoh: Warung Tenda Biru">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Nama Pemilik</label>
+                                    <input type="text" id="nama_pemilik" class="form-control" required placeholder="Nama lengkap Anda">
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid two-cols" style="margin-top: 1.25rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Nomor Telepon (WhatsApp)</label>
+                                    <input type="tel" id="nomor_telepon" class="form-control" required placeholder="Contoh: 08123456789">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Lokasi Detail</label>
+                                    <input type="text" id="lokasi" class="form-control" required placeholder="Contoh: Depan Gerbang Utama Telkom">
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 1.25rem;">
+                                <label class="form-label">Deskripsi / Jam Buka</label>
+                                <textarea id="deskripsi" class="form-control" placeholder="Ceritakan keistimewaan menu warung Anda atau tulis jam buka operasional..."></textarea>
+                            </div>
+
+                            <button type="submit" id="btnSave" class="btn-save">
+                                <i class="fa-solid fa-save"></i> Simpan Perubahan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // Sesuaikan URL ini dengan folder Laragon Anda
+        const apiUrl = 'http://localhost/Gerai-Fox/Backend/merchant-system/management-product/profilewrg.php';
+        let currentImageBase64 = '';
+
+        window.onload = fetchProfile;   
+
+        async function fetchProfile() {
+            setLoading(true);
+            try {
+                const response = await fetch(apiUrl, { method: 'GET' });
+                const result = await response.json();
+                
+                if (result.status === 'success' && result.data) {
+                    const data = result.data;
+                    document.getElementById('nama_warung').value = data.nama_warung || '';
+                    document.getElementById('nama_pemilik').value = data.nama_pemilik || '';
+                    document.getElementById('nomor_telepon').value = data.nomor_telepon || '';
+                    document.getElementById('lokasi').value = data.lokasi || '';
+                    document.getElementById('deskripsi').value = data.deskripsi || '';
+                    
+                    document.getElementById('displayName').innerText = data.nama_warung || 'Warung Anda';
+                    
+                    if (data.foto_warung) {
+                        document.getElementById('previewImage').src = data.foto_warung;
+                        currentImageBase64 = data.foto_warung;
+                    }
+                }
+            } catch (error) {
+                showToast("Gagal memuat profil: " + error.message, "error");
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function saveProfile(e) {
+            e.preventDefault();
+            const btnSave = document.getElementById('btnSave');
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            
+            const payload = {
+                nama_warung: document.getElementById('nama_warung').value,
+                nama_pemilik: document.getElementById('nama_pemilik').value,
+                nomor_telepon: document.getElementById('nomor_telepon').value,
+                lokasi: document.getElementById('lokasi').value,
+                deskripsi: document.getElementById('deskripsi').value,
+                foto_warung: currentImageBase64
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showToast(result.message, "success");
+                    document.getElementById('displayName').innerText = payload.nama_warung;
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showToast("Gagal menyimpan: " + error.message, "error");
+            } finally {
+                btnSave.disabled = false;
+                btnSave.innerHTML = '<i class="fa-solid fa-save"></i> Simpan Perubahan';
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Ukuran foto terlalu besar (Maks 2MB).', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentImageBase64 = e.target.result;
+                document.getElementById('previewImage').src = currentImageBase64;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setLoading(isLoading) {
+            const loaders = document.querySelectorAll('.loading-overlay');
+            loaders.forEach(loader => {
+                if (isLoading) loader.classList.remove('hidden');
+                else loader.classList.add('hidden');
+            });
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+            const color = type === 'success' ? '#10b981' : '#ef4444';
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fa-solid ${icon} fa-lg" style="color: ${color}"></i> <span style="font-size:0.875rem; font-weight:500">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
