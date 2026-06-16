@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HubBite - Pembayaran Berhasil</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #FFFFFF; 
+        }
+        
+        /* Animasi Pop-in untuk Ikon Centang */
+        @keyframes scale-up-center {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .animate-scale-up {
+            animation: scale-up-center 0.6s cubic-bezier(0.175, 0.885, 0.320, 1.275) both;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Kontainer Utama -->
+    <main class="max-w-md w-full text-center flex flex-col items-center justify-center space-y-8">
+        
+        <!-- Ikon Sukses (Green Checkmark) -->
+        <div class="relative animate-scale-up">
+            <!-- Lingkaran Bayangan/Glow -->
+            <div class="absolute inset-0 bg-[#22C55E] blur-xl opacity-30 rounded-full"></div>
+            
+            <!-- Lingkaran Utama -->
+            <div class="relative w-32 h-32 bg-[#22C55E] rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                <i data-lucide="check" class="w-16 h-16 text-white stroke-[3]"></i>
+            </div>
+        </div>
+
+        <!-- Teks Informasi -->
+        <div class="space-y-4 px-4">
+            <h1 class="text-3xl font-extrabold text-gray-800 tracking-tight">
+                Pembayaran Berhasil !
+            </h1>
+            <p class="text-gray-500 text-[15px] leading-relaxed max-w-sm mx-auto font-medium">
+                Pembayaran kamu sudah di konfirmasi. Warung akan menerima pesanan kamu, cek kembali status pesanan apakah sudah diterima
+            </p>
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="pt-4">
+            <button onclick="goToOrders()" class="bg-[#FF6B00] hover:bg-orange-600 text-white font-bold py-3.5 px-10 rounded-full shadow-lg shadow-orange-500/30 transition-all transform hover:-translate-y-1 active:translate-y-0 text-sm tracking-wide">
+                Cek Pesanan
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        // Inisialisasi Ikon
+        window.onload = () => {
+            lucide.createIcons();
+        };
+
+        // Fungsi Redirect ke Dashboard (Sambil membuka riwayat pesanan jika memungkinkan)
+        function goToOrders() {
+            // Kita arahkan kembali ke Dashboard Utama
+            // (Nantinya di Dashboard, user bisa mengklik menu "Orders" untuk mengecek pesanan)
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>
