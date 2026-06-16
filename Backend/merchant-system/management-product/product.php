@@ -42,7 +42,7 @@ if ($method === 'GET') {
     $deskripsi = mysqli_real_escape_string($conn, $input['description'] ?? '');
     $gambar = mysqli_real_escape_string($conn, $input['image'] ?? '');
 
-    $sql = "INSERT INTO products (nama, harga, kategori, deskripsi, gambar) VALUES ('$nama', $harga, '$kategori', '$deskripsi', '$gambar')";
+    $sql = "INSERT INTO products (name, price, category, description, image) VALUES ('$nama', $harga, '$kategori', '$deskripsi', '$gambar')";
     
     if (mysqli_query($conn, $sql)) {
         echo json_encode(["status" => "success", "message" => "Product berhasil ditambahkan."]);
@@ -62,7 +62,7 @@ if ($method === 'GET') {
     $deskripsi = mysqli_real_escape_string($conn, $input['description'] ?? '');
     $gambar = mysqli_real_escape_string($conn, $input['image'] ?? '');
 
-    $sql = "UPDATE products SET nama='$nama', harga=$harga, kategori='$kategori', deskripsi='$deskripsi', gambar='$gambar' WHERE product_id=$id";
+    $sql = "UPDATE products SET name='$nama', price=$harga, category='$kategori', description='$deskripsi', image='$gambar' WHERE product_id=$id";
     
     if (mysqli_query($conn, $sql)) {
         echo json_encode(["status" => "success", "message" => "Product berhasil diperbarui."]);
