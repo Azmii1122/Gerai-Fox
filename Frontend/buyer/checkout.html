@@ -22,7 +22,7 @@
     <header class="sticky top-0 bg-white border-b border-gray-100 z-40">
         <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <a href="dashboard.html" class="p-2 hover:bg-gray-100 rounded-full transition-all">
+                <a href="home.html" class="p-2 hover:bg-gray-100 rounded-full transition-all">
                     <i data-lucide="arrow-left" class="w-6 h-6"></i>
                 </a>
                 <span class="text-xl font-bold">Checkout</span>
@@ -212,7 +212,7 @@
 
 
     <script>
-        const API_URL = 'api.php';
+        const API_URL = 'http://localhost/Gerai-Fox/Backend/API/pembelian.php';
         let subtotal = 0;
         let currentTotalAmount = 0; // Disimpan global untuk dipassing ke Pop-up QRIS
         let cartItems = [];
