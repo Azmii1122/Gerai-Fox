@@ -881,258 +881,231 @@
 
     <script>
  
-        const apiUrl = 'http://localhost/Gerai-Fox/Backend/merchant-system/management-product/product.php';
-        API_KEY = '12345-RAHASIA-WEB';
-        let menus = [];
-        let itemToDelete = null;
+        // ==========================================
+// FULL JAVASCRIPT UNTUK PRODUCT.HTML
+// ==========================================
 
-        const formatRupiah = (angka) => {
-            return new Intl.NumberFormat('id-ID', { 
-                style: 'currency', 
-                currency: 'IDR', 
-                minimumFractionDigits: 0 
-            }).format(angka);
-        };
+const API_URL = 'http://localhost/Gerai-Fox/Backend/merchant-system/management-product/product.php'; 
+let menus = []; // Variabel global untuk menyimpan data sementara (berguna untuk fitur pencarian)
 
-        async function fetchMenus() {
-            showLoading(true);
-            try {
-                const response = await fetch(`${apiUrl}?api_key=${API_KEY}`, { method: 'GET' });
-                const responseData = await response.json(); 
-                
-                if (!response.ok) {
-                    throw new Error(responseData.message || 'API Error');
-                }
-                menus = responseData.data ? responseData.data : responseData;
-            } catch (error) {
-                console.error("Fetch Error:", error);
-                menus = []; 
-            } finally {
-                showLoading(false);
-                renderGrid();
-            }
+// 1. Panggil data saat halaman pertama kali dimuat
+document.addEventListener('DOMContentLoaded', () => {
+    loadProducts();
+});
+
+// 2. Fungsi untuk mengambil data dari Backend (product.php)
+async function loadProducts() {
+    const loader = document.getElementById('loader');
+    const grid = document.getElementById('grid');
+    
+    // Tampilkan animasi loading, sembunyikan grid
+    if(loader) loader.classList.remove('hidden');
+    if(grid) grid.classList.add('hidden');
+
+    try {
+        const response = await fetch(API_URL);
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            menus = result.data; // Simpan ke variabel global
+            renderGrid(menus);   // Tampilkan ke layar
+        } else {
+            showToast('Gagal memuat data: ' + result.message, 'error');
         }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Terjadi kesalahan koneksi.', 'error');
+    } finally {
+        // Matikan animasi loading, tampilkan kembali grid
+        if(loader) loader.classList.add('hidden');
+        if(grid) grid.classList.remove('hidden');
+    }
+}
 
-        async function handleFormSubmit(e) {
-            e.preventDefault();
-            const fileInput = document.getElementById('gambarFile');
-            const btnSubmit = document.getElementById('btnSubmit');
-            const originalBtnText = btnSubmit.innerHTML;
-            
-            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
-            btnSubmit.disabled = true;
-            
-            const processData = async (gambarValue) => {
-                const id = document.getElementById('menuId').value;
-                const payload = {
-                    nama: document.getElementById('nama').value,
-                    harga: document.getElementById('harga').value,
-                    kategori: document.getElementById('kategori').value,
-                    deskripsi: document.getElementById('deskripsi').value,
-                    gambar: gambarValue
-                };
-                
-                const isEdit = id !== '';
-                const methodType = isEdit ? 'PUT' : 'POST';
-                
-                const targetUrl = isEdit 
-                    ? `${apiUrl}?id=${id}&api_key=${API_KEY}` 
-                    : `${apiUrl}?api_key=${API_KEY}`;
+// 3. Fungsi untuk mencetak kartu (Card) ke dalam HTML
+function renderGrid(data) {
+    const grid = document.getElementById('grid');
+    if (!grid) return;
+    
+    grid.innerHTML = ''; // Bersihkan isi grid sebelumnya
 
-                try {
-                    const response = await fetch(targetUrl, {
-                        method: methodType, 
-                        headers: { 'Content-Type': 'application/json' }, 
-                        body: JSON.stringify(payload)
-                    });
+    if (data.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; background:white; border-radius:16px; border:1px solid var(--slate-200);">Belum ada menu yang sesuai.</div>`;
+        return;
+    }
+
+    data.forEach(p => {
+        // Logika untuk menampilkan gambar atau placeholder kotak abu-abu
+        let imgHtml = p.image 
+            ? `<img src="${p.image}" alt="Gambar" style="width:100%; height:160px; object-fit:cover; border-radius:12px 12px 0 0;">` 
+            : `<div style="height:160px; background:var(--slate-200); display:flex; align-items:center; justify-content:center; border-radius:12px 12px 0 0;"><i class="fas fa-image fa-2x" style="color:var(--slate-400)"></i></div>`;
+        
+        let hargaRp = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(p.price);
+        
+        grid.innerHTML += `
+            <div class="card" style="background:white; border:1px solid var(--slate-200); border-radius:12px; margin-bottom:20px; box-shadow:0 2px 4px rgba(0,0,0,0.05); display:flex; flex-direction:column;">
+                ${imgHtml}
+                <div style="padding:15px; display:flex; flex-direction:column; flex:1;">
+                    <div style="margin-bottom:auto;">
+                        <span style="font-size:11px; background:var(--fox-50); color:var(--fox-600); padding:4px 8px; border-radius:12px; font-weight:bold;">${p.category}</span>
+                        <h3 style="margin:10px 0 5px 0; font-size:16px; color:var(--text-dark);">${p.name}</h3>
+                        <div style="font-weight:bold; color:var(--fox-600); margin-bottom:10px;">${hargaRp}</div>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${p.description || 'Tidak ada deskripsi'}</p>
+                    </div>
                     
-                    const responseData = await response.json();
-                    
-                    if (!response.ok) {
-                        throw new Error(responseData.message || "Gagal menyimpan ke database.");
-                    }
-                    
-                    await fetchMenus(); 
-                    closeModal('formModal');
-                    showToast(isEdit ? 'Menu diperbarui!' : 'Menu ditambahkan ke Database!', 'success');
+                    <div style="display:flex; gap:10px; margin-top:15px;">
+                        <button onclick="editProduct(${p.product_id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, '${p.category}', '${(p.description || '').replace(/'/g, "\\'")}', '${(p.image || '')}')" style="flex:1; padding:8px; background:var(--slate-100); color:var(--text-dark); border:none; border-radius:6px; cursor:pointer; font-weight:600; transition:0.2s;" onmouseover="this.style.background='var(--slate-200)'" onmouseout="this.style.background='var(--slate-100)'"><i class="fas fa-edit"></i> Edit</button>
+                        
+                        <button onclick="deleteProduct(${p.product_id})" style="flex:1; padding:8px; background:#fee2e2; color:#ef4444; border:none; border-radius:6px; cursor:pointer; font-weight:600; transition:0.2s;" onmouseover="this.style.background='#fca5a5'; this.style.color='white'" onmouseout="this.style.background='#fee2e2'; this.style.color='#ef4444'"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
 
-                } catch (error) {
-                    showToast(error.message, 'error');
-                } finally {
-                    btnSubmit.innerHTML = originalBtnText;
-                    btnSubmit.disabled = false;
-                }
-            };
+// 4. Fitur Pencarian Langsung (Search)
+const searchInput = document.getElementById('searchInput');
+if(searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const keyword = e.target.value.toLowerCase();
+        // Filter array berdasarkan nama atau kategori
+        const filtered = menus.filter(m => 
+            m.name.toLowerCase().includes(keyword) || 
+            m.category.toLowerCase().includes(keyword)
+        );
+        renderGrid(filtered); // Cetak ulang grid dengan hasil filter
+    });
+}
 
-            if (fileInput.files && fileInput.files[0]) {
-                const fileSize = fileInput.files[0].size / 1024 / 1024; // MB
-                if (fileSize > 2) { 
-                    showToast('Ukuran foto terlalu besar (Maks 2MB). Silakan kecilkan ukuran foto Anda.', 'error');
-                    btnSubmit.innerHTML = originalBtnText;
-                    btnSubmit.disabled = false;
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = e => processData(e.target.result); 
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                processData(document.getElementById('gambar').value);
-            }
-        }
+// 5. Fungsi Simpan (Untuk Tambah & Edit)
+async function saveProduct(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('product_id').value;
+    const method = (id === "0" || id === "") ? "POST" : "PUT";
+    const url = (id === "0" || id === "") ? API_URL : `${API_URL}?id=${id}`;
 
-        async function executeDelete() {
-            if (!itemToDelete) return;
-            try {
-                const targetUrl = `${apiUrl}?id=${itemToDelete}&api_key=${API_KEY}`;
-                const response = await fetch(targetUrl, {
-                    method: 'DELETE'
-                });
-                
-                const responseData = await response.json();
+    const payload = {
+        nama: document.getElementById('nama').value,
+        harga: document.getElementById('harga').value,
+        kategori: document.getElementById('kategori').value,
+        deskripsi: document.getElementById('deskripsi').value,
+        gambar: document.getElementById('gambar').value
+    };
 
-                if (!response.ok) {
-                    throw new Error(responseData.message || 'Gagal menghapus data di database');
-                }
-                
-                await fetchMenus();
-                closeModal('deleteModal');
-                showToast('Menu dihapus dari database!', 'success');
-            } catch (error) {
-                closeModal('deleteModal');
-                showToast(error.message, 'error');
-            } finally {
-                itemToDelete = null;
-            }
-        }
-
-        function renderGrid() {
-            const grid = document.getElementById('menuGrid');
-            const emptyState = document.getElementById('emptyState');
-            grid.innerHTML = '';
-
-            if (menus.length === 0) {
-                emptyState.classList.remove('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-                menus.forEach(menu => {
-                    const fallbackImg = `https://placehold.co/400x300/e2e8f0/64748b?text=${encodeURIComponent(menu.nama.charAt(0))}`;
-                    const imgUrl = menu.gambar ? menu.gambar : fallbackImg;
-                    
-                    let badgeClass = "badge-makanan";
-                    if(menu.kategori === 'Minuman') {
-                        badgeClass = "badge-minuman";
-                    } else if(menu.kategori === 'Cemilan') {
-                        badgeClass = "badge-cemilan";
-                    }
-
-                    const card = `
-                        <div class="card">
-                            <div class="card-img-wrapper">
-                                <img src="${imgUrl}" alt="${menu.nama}" onerror="this.src='${fallbackImg}'">
-                                <span class="card-badge ${badgeClass}">${menu.kategori}</span>
-                            </div>
-                            <div class="card-body">
-                                <h3 class="card-title">${menu.nama}</h3>
-                                <p class="card-price">${formatRupiah(menu.harga)}</p>
-                                <p class="card-desc">${menu.deskripsi || 'Tidak ada deskripsi'}</p>
-                                <div class="card-footer">
-                                    <button onclick="openModal('edit', ${menu.id})" class="btn-card-edit">
-                                        <i class="fa-solid fa-pen-to-square"></i> Edit
-                                    </button>
-                                    <button onclick="confirmDelete(${menu.id}, '${menu.nama.replace(/'/g, "\\'")}')" class="btn-card-delete">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    grid.insertAdjacentHTML('beforeend', card);
-                });
-            }
-        }
-
-        function openModal(mode, id = null) {
-            const modal = document.getElementById('formModal');
-            const form = document.getElementById('menuForm');
-            
-            form.reset();
-            document.getElementById('menuId').value = '';
-            document.getElementById('gambarFile').value = '';
-
-            if (mode === 'add') {
-                document.getElementById('modalTitle').textContent = 'Tambah Menu Baru';
-                document.getElementById('btnSubmit').innerHTML = '<i class="fa-solid fa-plus"></i> Tambah Menu';
-            } else if (mode === 'edit') {
-                document.getElementById('modalTitle').textContent = 'Edit Menu';
-                document.getElementById('btnSubmit').innerHTML = '<i class="fa-solid fa-save"></i> Simpan Perubahan';
-                
-                const menu = menus.find(m => m.id == id);
-                if (menu) {
-                    document.getElementById('menuId').value = menu.id;
-                    document.getElementById('nama').value = menu.nama;
-                    document.getElementById('harga').value = menu.harga;
-                    document.getElementById('kategori').value = menu.kategori;
-                    document.getElementById('deskripsi').value = menu.deskripsi || '';
-                    if(menu.gambar && menu.gambar.startsWith('http')) {
-                        document.getElementById('gambar').value = menu.gambar;
-                    }
-                }
-            }
-            modal.classList.add('active');
-        }
-
-        function confirmDelete(id, nama) {
-            itemToDelete = id;
-            document.getElementById('deleteItemName').textContent = nama;
-            document.getElementById('deleteModal').classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            if(modalId === 'deleteModal') {
-                itemToDelete = null;
-            }
-        }
-
-        function showLoading(show) {
-            const loader = document.getElementById('loadingState');
-            const grid = document.getElementById('menuGrid');
-            if (show) { 
-                loader.classList.remove('hidden'); 
-                grid.classList.add('hidden'); 
-            } else { 
-                loader.classList.add('hidden'); 
-                grid.classList.remove('hidden'); 
-            }
-        }
-
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-xmark';
-            const toast = document.createElement('div');
-            
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `<i class="fa-solid ${icon} fa-lg"></i> <p style="font-weight: 500; font-size: 0.875rem;">${message}</p>`;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0'; 
-                toast.style.transform = 'translateY(100%)'; 
-                toast.style.transition = 'all 0.3s ease-in';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            const filtered = menus.filter(m => 
-                m.nama.toLowerCase().includes(keyword) || 
-                m.kategori.toLowerCase().includes(keyword)
-            );
-            renderGrid(filtered);
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
-        window.onload = fetchMenus;
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            closeModal();
+            showToast(result.message, 'success');
+            loadProducts(); // Load ulang agar data baru muncul
+        } else {
+            showToast(result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Save error:', error);
+        showToast('Gagal menyimpan data.', 'error');
+    }
+}
+
+// 6. Fungsi Hapus Menu
+async function deleteProduct(id) {
+    if (!confirm('Yakin ingin menghapus menu ini dari warungmu?')) return;
+    
+    try {
+        const response = await fetch(`${API_URL}?id=${id}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.status === 'success') {
+            showToast(result.message, 'success');
+            loadProducts(); // Load ulang agar card hilang
+        } else {
+            showToast(result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        showToast('Gagal menghapus data.', 'error');
+    }
+}
+
+// ==========================================
+// FUNGSI MODAL POP-UP & TOAST NOTIFIKASI
+// ==========================================
+
+function openModal() {
+    document.getElementById('productForm').reset();
+    document.getElementById('product_id').value = "0";
+    document.getElementById('modalTitle').innerText = "Tambah Menu Baru";
+    
+    const modal = document.getElementById('modalOverlay');
+    if(modal) {
+        modal.classList.add('active');
+        modal.classList.remove('hidden'); // Antisipasi kalau pakai class hidden
+    }
+}
+
+function editProduct(id, nama, harga, kategori, deskripsi, gambar) {
+    document.getElementById('product_id').value = id;
+    document.getElementById('nama').value = nama;
+    document.getElementById('harga').value = harga;
+    document.getElementById('kategori').value = kategori;
+    document.getElementById('deskripsi').value = deskripsi !== 'undefined' ? deskripsi : '';
+    document.getElementById('gambar').value = gambar !== 'undefined' ? gambar : '';
+    
+    document.getElementById('modalTitle').innerText = "Edit Menu";
+    
+    const modal = document.getElementById('modalOverlay');
+    if(modal) {
+        modal.classList.add('active');
+        modal.classList.remove('hidden');
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('modalOverlay');
+    if(modal) {
+        modal.classList.remove('active');
+        modal.classList.add('hidden');
+    }
+}
+
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    if(!container) { alert(message); return; } // Fallback aman
+    
+    const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-xmark';
+    const toast = document.createElement('div');
+    
+    toast.className = `toast ${type}`;
+    // Inline style tambahan agar pop-upnya keren
+    toast.style.background = 'white';
+    toast.style.padding = '15px 20px';
+    toast.style.borderRadius = '8px';
+    toast.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+    toast.style.borderLeft = type === 'success' ? '4px solid #10B981' : '4px solid #EF4444';
+    toast.style.display = 'flex';
+    toast.style.alignItems = 'center';
+    toast.style.gap = '10px';
+    toast.style.marginBottom = '10px';
+    
+    toast.innerHTML = `<i class="fa-solid ${icon} fa-lg" style="color: ${type === 'success' ? '#10B981' : '#EF4444'};"></i> <p style="font-weight: 600; font-size: 14px; margin:0; color:#1F2937;">${message}</p>`;
+    
+    container.appendChild(toast);
+    
+    // Auto-remove toast
+    setTimeout(() => {
+        toast.style.opacity = '0'; 
+        toast.style.transform = 'translateY(100%)'; 
+        toast.style.transition = 'all 0.3s ease-in';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
     </script>
 </body>
 </html>
