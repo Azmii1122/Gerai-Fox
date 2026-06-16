@@ -56,11 +56,11 @@ if ($method === 'GET') {
         exit();
     }
 
-    $nama = mysqli_real_escape_string($conn, $input['name'] ?? '');
-    $harga = (int)($input['price'] ?? 0);
-    $kategori = mysqli_real_escape_string($conn, $input['category'] ?? '');
-    $deskripsi = mysqli_real_escape_string($conn, $input['description'] ?? '');
-    $gambar = mysqli_real_escape_string($conn, $input['image'] ?? '');
+    $nama = mysqli_real_escape_string($conn, $input['nama'] ?? '');
+    $harga = (int)($input['harga'] ?? 0);
+    $kategori = mysqli_real_escape_string($conn, $input['kategori'] ?? '');
+    $deskripsi = mysqli_real_escape_string($conn, $input['deskripsi'] ?? '');
+    $gambar = mysqli_real_escape_string($conn, $input['gambar'] ?? '');
 
     $sql = "UPDATE products SET name='$nama', price=$harga, category='$kategori', description='$deskripsi', image='$gambar' WHERE product_id=$id";
     
