@@ -67,6 +67,31 @@
         .btn-save:hover { background: var(--fox-600); }
         .btn-save:disabled { opacity: 0.7; cursor: not-allowed; }
 
+        /* Styling Kotak Status Read-Only (Hak Akses Admin) */
+        .status-box {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--slate-100);
+            color: var(--slate-500);
+            border: 1px solid var(--slate-200);
+        }
+        .status-box.active {
+            background-color: #d1fae5;
+            color: #059669;
+            border-color: #a7f3d0;
+        }
+        .status-hint {
+            font-size: 0.75rem;
+            color: var(--slate-400);
+            margin-top: 0.35rem;
+            display: block;
+        }
+
         /* Toast & Loading */
         .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; display: flex; flex-direction: column; gap: 0.75rem; }
         .toast { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: white; border-radius: 0.75rem; box-shadow: var(--shadow-md); animation: slideInUp 0.3s ease forwards; border-left: 4px solid; }
@@ -125,22 +150,31 @@
                             <div class="form-grid two-cols">
                                 <div class="form-group">
                                     <label class="form-label">Nama Warung</label>
-                                    <input type="text" id="nama_warung" class="form-control" required placeholder="Contoh: Warung Tenda Biru">
+                                    <input type="text" id="store_name" class="form-control" required placeholder="Contoh: Warung Tenda Biru">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Nama Pemilik</label>
-                                    <input type="text" id="nama_pemilik" class="form-control" required placeholder="Nama lengkap Anda">
+                                    <label class="form-label">Email Pemilik (Otomatis)</label>
+                                    <input type="email" id="email" class="form-control" readonly style="background-color: #f1f5f9; color: #64748b; cursor: not-allowed;" title="Email diambil otomatis dari data akun pengguna">
                                 </div>
                             </div>
                             
                             <div class="form-grid two-cols" style="margin-top: 1.25rem;">
+                                <!-- Status Delivery (Hanya Baca) -->
                                 <div class="form-group">
-                                    <label class="form-label">Nomor Telepon (WhatsApp)</label>
-                                    <input type="tel" id="nomor_telepon" class="form-control" required placeholder="Contoh: 08123456789">
+                                    <label class="form-label">Layanan Pengiriman</label>
+                                    <div class="status-box" id="status_delivery">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Memuat Status...
+                                    </div>
+                                    <span class="status-hint"><i class="fa-solid fa-lock"></i> Hak akses dikelola oleh Admin</span>
                                 </div>
+                                
+                                <!-- Status Priority (Hanya Baca) -->
                                 <div class="form-group">
-                                    <label class="form-label">Lokasi Detail</label>
-                                    <input type="text" id="lokasi" class="form-control" required placeholder="Contoh: Depan Gerbang Utama Telkom">
+                                    <label class="form-label">Jalur Prioritas (Priority Order)</label>
+                                    <div class="status-box" id="status_priority">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Memuat Status...
+                                    </div>
+                                    <span class="status-hint"><i class="fa-solid fa-lock"></i> Hak akses dikelola oleh Admin</span>
                                 </div>
                             </div>
 
@@ -162,11 +196,11 @@
     <div id="toastContainer" class="toast-container"></div>
 
     <script>
-        // Sesuaikan URL ini dengan folder Laragon Anda
         const apiUrl = 'http://localhost/Gerai-Fox/Backend/merchant-system/management-product/profilewrg.php';
         let currentImageBase64 = '';
+        let isEditMode = false; 
 
-        window.onload = fetchProfile;   
+        window.onload = fetchProfile;
 
         async function fetchProfile() {
             setLoading(true);
@@ -175,19 +209,50 @@
                 const result = await response.json();
                 
                 if (result.status === 'success' && result.data) {
+                    isEditMode = true; 
                     const data = result.data;
-                    document.getElementById('nama_warung').value = data.nama_warung || '';
-                    document.getElementById('nama_pemilik').value = data.nama_pemilik || '';
-                    document.getElementById('nomor_telepon').value = data.nomor_telepon || '';
-                    document.getElementById('lokasi').value = data.lokasi || '';
-                    document.getElementById('deskripsi').value = data.deskripsi || '';
                     
-                    document.getElementById('displayName').innerText = data.nama_warung || 'Warung Anda';
+                    document.getElementById('store_name').value = data.store_name || '';
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('deskripsi').value = data.deskripsi || '';
+                    document.getElementById('displayName').innerText = data.store_name || 'Warung Anda';
                     
                     if (data.foto_warung) {
                         document.getElementById('previewImage').src = data.foto_warung;
                         currentImageBase64 = data.foto_warung;
                     }
+
+                    // Logika UI Kotak Status Delivery
+                    const boxDelivery = document.getElementById('status_delivery');
+                    if (data.allow_delivery == 1) {
+                        boxDelivery.className = 'status-box active';
+                        boxDelivery.innerHTML = '<i class="fa-solid fa-circle-check"></i> Delivery Aktif';
+                    } else {
+                        boxDelivery.className = 'status-box';
+                        boxDelivery.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Delivery Tidak Aktif';
+                    }
+
+                    // Logika UI Kotak Status Priority
+                    const boxPriority = document.getElementById('status_priority');
+                    if (data.allow_priority == 1) {
+                        boxPriority.className = 'status-box active';
+                        boxPriority.innerHTML = '<i class="fa-solid fa-circle-check"></i> Prioritas Aktif';
+                    } else {
+                        boxPriority.className = 'status-box';
+                        boxPriority.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Prioritas Tidak Aktif';
+                    }
+                    
+                } else if (result.status === 'empty') {
+                    isEditMode = false; 
+                    // Tetap masukkan email ke form meskipun warung belum dibuat
+                    document.getElementById('email').value = result.email || '';
+                    document.getElementById('displayName').innerText = 'Identitas Belum Diatur';
+                    
+                    // Atur status default abu-abu jika belum ada data warung
+                    document.getElementById('status_delivery').innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Delivery Tidak Aktif';
+                    document.getElementById('status_priority').innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Prioritas Tidak Aktif';
+                    
+                    showToast("Silakan isi informasi warung Anda untuk pertama kali.", "info");
                 }
             } catch (error) {
                 showToast("Gagal memuat profil: " + error.message, "error");
@@ -202,18 +267,18 @@
             btnSave.disabled = true;
             btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
             
+            // Payload tidak lagi menyertakan allow_delivery dan allow_priority (Dihandle oleh PHP/Admin)
             const payload = {
-                nama_warung: document.getElementById('nama_warung').value,
-                nama_pemilik: document.getElementById('nama_pemilik').value,
-                nomor_telepon: document.getElementById('nomor_telepon').value,
-                lokasi: document.getElementById('lokasi').value,
+                store_name: document.getElementById('store_name').value,
                 deskripsi: document.getElementById('deskripsi').value,
                 foto_warung: currentImageBase64
             };
 
+            const requestMethod = isEditMode ? 'PUT' : 'POST';
+
             try {
                 const response = await fetch(apiUrl, {
-                    method: 'PUT',
+                    method: requestMethod,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
@@ -222,7 +287,8 @@
                 
                 if (result.status === 'success') {
                     showToast(result.message, "success");
-                    document.getElementById('displayName').innerText = payload.nama_warung;
+                    document.getElementById('displayName').innerText = payload.store_name;
+                    isEditMode = true; 
                 } else {
                     throw new Error(result.message);
                 }
@@ -262,7 +328,7 @@
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
-            const color = type === 'success' ? '#10b981' : '#ef4444';
+            const color = type === 'success' ? '#10b981' : (type === 'info' ? '#3b82f6' : '#ef4444');
             
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
