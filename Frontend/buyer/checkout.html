@@ -330,8 +330,8 @@
                 const json = await res.json();
 
                if (json.status === 'success') {
-    // Kita arahkan ke halaman sukses!
-    window.location.href = 'success.html'; // Kembali ke Home
+                // Kita arahkan ke halaman sukses!
+                window.location.href = 'success.html'; // Kembali ke Home
                 } else {
                     alert('Gagal: ' + json.message);
                 }
