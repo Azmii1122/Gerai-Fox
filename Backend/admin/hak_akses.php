@@ -125,7 +125,7 @@ if (isset($_POST['update_access'])) {
                         <th>ID</th>
                         <th>Info Warung</th>
                         <th>Akses Delivery</th>
-                        <th>Akses Priority Order</th>
+                        <th>Akses Order Prioritas</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
