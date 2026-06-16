@@ -22,6 +22,7 @@ register_shutdown_function(function() {
 
 include '../../db_connect.php';
 
+
 $input = json_decode(file_get_contents("php://input"), true);
 $method = $_SERVER['REQUEST_METHOD'];
 
