@@ -157,7 +157,7 @@ $tot_warung_buka = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM merchants 
                 <thead>
                     <tr>
                         <th>ID Order</th>
-                        <th>Email Pembeli</th>
+                        <th>Pembeli</th>
                         <th>Metode Bayar</th>
                         <th>Total</th>
                         <th>Status</th>
