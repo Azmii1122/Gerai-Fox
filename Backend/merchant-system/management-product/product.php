@@ -36,11 +36,11 @@ if ($method === 'GET') {
     echo json_encode(["status" => "success", "data" => $data]);
     
 } elseif ($method === 'POST') {
-    $nama = mysqli_real_escape_string($conn, $input['name'] ?? '');
-    $harga = (int)($input['price'] ?? 0);
-    $kategori = mysqli_real_escape_string($conn, $input['category'] ?? '');
-    $deskripsi = mysqli_real_escape_string($conn, $input['description'] ?? '');
-    $gambar = mysqli_real_escape_string($conn, $input['image'] ?? '');
+    $nama = mysqli_real_escape_string($conn, $input['nama'] ?? '');
+    $harga = (int)($input['harga'] ?? 0);
+    $kategori = mysqli_real_escape_string($conn, $input['kategori'] ?? '');
+    $deskripsi = mysqli_real_escape_string($conn, $input['deskripsi'] ?? '');
+    $gambar = mysqli_real_escape_string($conn, $input['gambar'] ?? '');
 
     $sql = "INSERT INTO products (name, price, category, description, image) VALUES ('$nama', $harga, '$kategori', '$deskripsi', '$gambar')";
     
