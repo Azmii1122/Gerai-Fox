@@ -3,546 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HubBite - Cari Makan di Kampus</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>HubBite - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --primary: #FF7A00;
-            --primary-hover: #E56E00;
-            --primary-light: #FFF2E5;
-            --bg-body: #F8F9FA;
-            --card-bg: #FFFFFF;
-            --text-dark: #1F2937;
-            --text-muted: #6B7280;
-            --border-color: #E5E7EB;
-            
-            /* Crowd Status Colors */
-            --crowd-hijau: #10B981;
-            --crowd-kuning: #F59E0B;
-            --crowd-merah: #EF4444;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-dark);
-            padding-bottom: 60px;
-        }
-
-        /* NAVBAR */
-        .navbar {
-            background-color: var(--card-bg);
-            padding: 16px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .brand {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            background: #F3F4F6;
-            padding: 10px 20px;
-            border-radius: 50px;
-            width: 400px;
-            border: 1px solid transparent;
-            transition: 0.3s;
-        }
-
-        .search-box:focus-within {
-            border-color: var(--primary);
-            background: var(--card-bg);
-        }
-
-        .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            width: 100%;
-            font-size: 14px;
-            color: var(--text-dark);
-            margin-left: 10px;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .icon-btn {
-            background: transparent;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-dark);
-            position: relative;
-        }
-
-        .badge-count {
-            position: absolute;
-            top: -5px;
-            right: -8px;
-            background: var(--primary);
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 10px;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        /* MAIN CONTAINER */
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        /* HERO BANNER */
-        .hero {
-            background: linear-gradient(100deg, #FF912A 0%, #FF6600 100%);
-            border-radius: 24px;
-            padding: 40px 50px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-text {
-            max-width: 600px;
-            z-index: 2;
-        }
-
-        .hero-text h1 {
-            font-size: 40px;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 15px;
-        }
-
-        .hero-text p {
-            font-size: 16px;
-            opacity: 0.9;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-
-        .btn-order-now {
-            background: var(--card-bg);
-            color: var(--primary);
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 15px;
-            text-decoration: none;
-            display: inline-block;
-            transition: 0.3s;
-        }
-        .btn-order-now:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .hero-image {
-            font-size: 120px;
-            z-index: 2;
-            filter: drop-shadow(0 20px 20px rgba(0,0,0,0.2));
-        }
-
-        /* KATEGORI PILLS */
-        .categories {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 40px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-        .categories::-webkit-scrollbar { display: none; }
-
-        .category-pill {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 10px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-muted);
-            cursor: pointer;
-            white-space: nowrap;
-            transition: 0.3s;
-        }
-        .category-pill.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        .category-pill:hover:not(.active) {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* SECTION HEADER */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .section-header h2 {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .view-all {
-            color: var(--primary);
-            font-weight: 600;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        /* GRID SYSTEM */
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 24px;
-            margin-bottom: 50px;
-        }
-
-        /* CARDS UMUM */
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
-            border-color: #D1D5DB;
-        }
-
-        /* MERCHANT CARD */
-        .merchant-cover {
-            height: 140px;
-            background: #E5E7EB;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 50px;
-            position: relative;
-        }
-        .merchant-info {
-            padding: 16px;
-        }
-        .merchant-info h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-        .merchant-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-        
-        .crowd-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            color: white;
-        }
-
-        /* PRODUCT CARD */
-        .product-cover {
-            height: 180px;
-            background: var(--primary-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-        }
-        .product-info {
-            padding: 16px;
-        }
-        .product-info h3 {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            line-height: 1.4;
-        }
-        .product-store {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-            font-weight: 500;
-        }
-        .product-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .price {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-        .btn-add {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-add:hover {
-            background: var(--primary-hover);
-            transform: scale(1.1);
-        }
-
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px;
-            color: var(--text-muted);
-            font-weight: 500;
-            background: white;
-            border-radius: 16px;
-            border: 1px dashed var(--border-color);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F9FAFB; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body>
+<body class="min-h-screen pb-24">
 
-    <nav class="navbar">
-        <div class="nav-left">
-            <a href="#" class="brand">🍔 HubBite</a>
-            <div class="search-box">
-                <span>🔍</span>
-                <input type="text" placeholder="Mau makan apa di kampus hari ini?">
+    <!-- Header -->
+    <header class="sticky top-0 bg-white shadow-sm z-40 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer">
+                <span class="text-2xl font-black text-[#FF6B00] tracking-tight flex items-center gap-1">
+                    <span class="bg-[#FF6B00] text-white p-1 rounded-lg"><i data-lucide="utensils-crosses"></i></span>
+                    Hub<span class="text-gray-800">Bite</span>
+                </span>
+            </div>
+            <!-- Cart Icon Header -->
+            <div class="relative cursor-pointer hover:bg-gray-100 p-2.5 rounded-full transition-all" onclick="toggleCartModal()">
+                <i data-lucide="shopping-cart" class="w-5 h-5 text-gray-700"></i>
+                <span id="header-cart-count" class="absolute -top-1 -right-1 bg-[#FF6B00] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
             </div>
         </div>
-        <div class="nav-right">
-            <button class="icon-btn">
-                🛒
-                <span class="badge-count">2</span>
-            </button>
-            <button class="icon-btn">
-                🔔
-                <span class="badge-count">1</span>
-            </button>
-            <div class="user-profile">
-                <div class="avatar">👨‍🎓</div>
-                <span>Mahasiswa</span>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-6 space-y-8">
+        <!-- Hero Banner -->
+        <div class="relative bg-gradient-to-r from-amber-500 to-[#FF6B00] rounded-3xl overflow-hidden shadow-xl min-h-[220px] flex items-center p-8 text-white">
+            <div class="relative z-10 max-w-xl space-y-4">
+                <span class="bg-yellow-400 text-amber-950 font-black text-xs px-3 py-1.5 rounded-full uppercase">Makan Kenyang Hemat</span>
+                <h1 class="text-3xl font-extrabold leading-tight">ĐÃ GIẢM NAY CÒN GIẢM HƠN!</h1>
+                <p class="text-white/90 text-sm">Diskon hingga 59% untuk pesanan di sekitar kampus.</p>
             </div>
         </div>
-    </nav>
 
-    <main class="container">
-        <section class="hero">
-            <div class="hero-text">
-                <h1>Cari Makan di Kampus<br>Gak Pake Ribet!</h1>
-                <p>Pesan sekarang, ambil langsung atau diantar ke tempatmu tanpa perlu antre panjang di jam istirahat.</p>
-                <a href="#produk-section" class="btn-order-now">Pesan Sekarang</a>
+        <!-- Best Sellers -->
+        <div class="space-y-4">
+            <h2 class="text-2xl font-extrabold text-gray-800">Rekomendasi Menu (Best Sellers)</h2>
+            <div id="best-sellers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <p class="text-gray-400 text-sm">Memuat rekomendasi menu...</p>
             </div>
-            <div class="hero-image">🍜</div>
-        </section>
-
-        <section class="categories">
-            <button class="category-pill active">Semua</button>
-            <button class="category-pill">🍗 Ayam</button>
-            <button class="category-pill">🍚 Nasi</button>
-            <button class="category-pill">🥤 Minuman</button>
-            <button class="category-pill">🍟 Snack</button>
-            <button class="category-pill">🍜 Mie</button>
-        </section>
-
-        <div class="section-header">
-            <h2>Warung Buka Saat Ini</h2>
-            <a href="#" class="view-all">Lihat Semua</a>
-        </div>
-        <div class="grid-layout" id="merchantContainer">
-            <div class="empty-state">Mencari warung terdekat... ⏳</div>
         </div>
 
-        <div class="section-header" id="produk-section">
-            <h2>Rekomendasi Menu</h2>
-            <a href="#" class="view-all">Lihat Semua</a>
-        </div>
-        <div class="grid-layout" id="productContainer">
-            <div class="empty-state">Memuat menu lezat untukmu... ⏳</div>
+        <!-- Daftar Warung -->
+        <div class="space-y-4">
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-gray-800">Cari Warung Kesayanganmu</h2>
+                    <p class="text-gray-400 text-sm">Pilih gerai andalanmu untuk melihat seluruh menu lezat</p>
+                </div>
+            </div>
+            <div id="merchants-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <p class="text-gray-400 text-sm">Memuat daftar gerai...</p>
+            </div>
         </div>
     </main>
 
-    <script>
-        const storeCovers = ['🏪', '🍳', '🍽️', '🎪', '🍲'];
-        const foodImages = ['🍛', '🍗', '🍜', '🍣', '🍱', '🥤', '🥗'];
+    <!-- STICKY CART BAR -->
+    <div id="sticky-cart-bar" onclick="toggleCartModal()" class="fixed bottom-6 left-4 right-4 md:left-1/2 md:right-auto md:w-[768px] md:-translate-x-1/2 bg-[#FF6B00] text-white p-4 rounded-3xl flex justify-between items-center shadow-2xl z-40 transform translate-y-32 opacity-0 transition-all duration-500 cursor-pointer">
+        <div class="flex items-center gap-4">
+            <div class="bg-white/20 p-2.5 rounded-2xl relative">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-white"></i>
+                <span id="cart-badge" class="absolute -top-1 -right-1 bg-yellow-400 text-amber-950 text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+            </div>
+            <div>
+                <p id="cart-item-count" class="font-extrabold text-sm">0 Item</p>
+                <p id="cart-merchant-label" class="text-[11px] text-white/80 font-medium">Belum ada pesanan</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span id="cart-total-price" class="text-base font-black tracking-tight">Rp 0</span>
+        </div>
+    </div>
 
-        async function loadHomeData() {
-            try {
-                // Fetch ke API yang sudah kita buat sebelumnya
-                const response = await fetch('http://localhost/Gerai-Fox/Backend/API/api_home.php'); 
-                const data = await response.json();
-
-                if(data.status === 'success') {
-                    renderMerchants(data.merchants);
-                    renderProducts(data.products);
-                } else {
-                    showError("Gagal mengambil data dari server.");
-                }
-            } catch (error) {
-                console.error("Fetch error:", error);
-                showError("Koneksi terputus. Pastikan server XAMPP menyala.");
-            }
-        }
-
-        function renderMerchants(merchants) {
-            const container = document.getElementById('merchantContainer');
-            container.innerHTML = ''; 
-
-            if(merchants.length === 0) {
-                container.innerHTML = '<div class="empty-state">Belum ada warung yang buka saat ini 😔</div>';
-                return;
-            }
-
-            merchants.forEach(m => {
-                // Logika Warna Indikator Keramaian
-                let bgColor = 'var(--crowd-hijau)';
-                let crowdText = 'Sepi Antrean';
+    <!-- MODAL CHECKOUT KERANJANG -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="p-6 bg-[#FF6B00] text-white flex justify-between items-center">
+                <h3 class="font-black text-lg">Keranjang HubBite</h3>
+                <button onclick="toggleCartModal()" class="bg-white/10 p-2 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 space-y-4">
+                <div id="cart-items-container" class="space-y-3"></div>
                 
-                if(m.live_crowd_status === 'kuning') { 
-                    bgColor = 'var(--crowd-kuning)'; 
-                    crowdText = 'Mulai Ramai'; 
-                }
-                if(m.live_crowd_status === 'merah') { 
-                    bgColor = 'var(--crowd-merah)'; 
-                    crowdText = 'Antre Panjang'; 
-                }
+                <div class="space-y-2 mt-4 border-t pt-4">
+                    <label class="text-xs font-bold text-gray-400 uppercase">Metode Pengiriman</label>
+                    <select id="checkout-order-mode" class="w-full border rounded-xl p-3 text-sm font-bold">
+                        <option value="delivery">Delivery (Pengantaran)</option>
+                        <option value="takeaway">Takeaway (Ambil Sendiri)</option>
+                        <option value="dine_in_qr">Dine In (Makan di Tempat)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="p-6 bg-gray-50 border-t flex gap-3">
+                <button onclick="processCheckout()" class="flex-1 py-3.5 bg-[#FF6B00] text-white font-bold rounded-2xl">Buat Pesanan Sekarang</button>
+            </div>
+        </div>
+    </div>
 
-                const randomEmoji = storeCovers[Math.floor(Math.random() * storeCovers.length)];
-                // Mockup data tambahan untuk mempercantik UI sesuai desain
-                const randomRating = (Math.random() * (5.0 - 4.0) + 4.0).toFixed(1);
+    <!-- JAVASCRIPT INTERNAL -->
+    <script>
+        const API_URL = 'api.php';
+        let cartData = [];
 
-                const card = `
-                    <div class="card">
-                        <div class="merchant-cover">${randomEmoji}</div>
-                        <div class="merchant-info">
-                            <h3>${m.store_name}</h3>
-                            <div class="merchant-meta">
-                                <span>⭐ ${randomRating}</span>
-                                <span>•</span>
-                                <span>Kantin Kampus</span>
+        // Inisialisasi Halaman
+        window.onload = () => {
+            lucide.createIcons();
+            fetchMerchants();
+            fetchBestSellers();
+            syncCart();
+        };
+
+        // Format Uang Rupiah
+        const formatRupiah = (angka) => 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
+
+        // Fetch Data Gerai
+        async function fetchMerchants() {
+            try {
+                const res = await fetch(`${API_URL}?action=get_merchants`);
+                const json = await res.json();
+                const grid = document.getElementById('merchants-grid');
+                grid.innerHTML = '';
+                
+                json.data.forEach(m => {
+                    grid.innerHTML += `
+                        <div onclick="window.location.href='katalog.html?id=${m.merchant_id}'" class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-lg transition-all">
+                            <div class="h-32 bg-gray-200">
+                                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
                             </div>
-                            <span class="crowd-badge" style="background-color: ${bgColor};">${crowdText}</span>
+                            <div class="p-4">
+                                <h3 class="font-extrabold text-gray-800">${m.store_name}</h3>
+                                <p class="text-xs text-emerald-500 font-bold mt-1">Buka Sekarang</p>
+                            </div>
                         </div>
-                    </div>
-                `;
-                container.innerHTML += card;
-            });
+                    `;
+                });
+            } catch (err) { console.error(err); }
         }
 
-        function renderProducts(products) {
-            const container = document.getElementById('productContainer');
-            container.innerHTML = '';
+        // Fetch Produk Acak Untuk Dashboard
+        async function fetchBestSellers() {
+            try {
+                const res = await fetch(`${API_URL}?action=get_all_products`);
+                const json = await res.json();
+                const grid = document.getElementById('best-sellers-grid');
+                grid.innerHTML = '';
+                
+                json.data.forEach(p => {
+                    grid.innerHTML += `
+                        <div class="bg-white rounded-3xl p-4 border border-gray-100 shadow-sm flex items-center justify-between gap-4">
+                            <div>
+                                <p class="text-[10px] text-gray-400 font-bold mb-1"><i data-lucide="store" class="w-3 h-3 inline"></i> ${p.store_name}</p>
+                                <h4 class="font-bold text-gray-800 text-sm">${p.name}</h4>
+                                <span class="font-black text-[#FF6B00] text-sm">${formatRupiah(p.price)}</span>
+                            </div>
+                            <button onclick="addToCart(${p.product_id})" class="border border-[#FF6B00] text-[#FF6B00] font-black text-xs py-1.5 px-4 rounded-full">TAMBAH</button>
+                        </div>
+                    `;
+                });
+                lucide.createIcons();
+            } catch (err) { console.error(err); }
+        }
 
-            if(products.length === 0) {
-                container.innerHTML = '<div class="empty-state">Belum ada menu yang tersedia 😔</div>';
+        // --- SISTEM KERANJANG GABUNGAN (API) ---
+        async function syncCart() {
+            try {
+                const res = await fetch(`${API_URL}?action=get_cart&buyer_id=1`);
+                const json = await res.json();
+                cartData = json.data;
+                renderCartUI();
+            } catch (err) { console.error(err); }
+        }
+
+        async function addToCart(productId) {
+            try {
+                const res = await fetch(`${API_URL}?action=add_to_cart`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ product_id: productId })
+                });
+                const json = await res.json();
+                
+                if (json.status === 'error') {
+                    alert(json.message); // Aturan 1 gerai
+                } else {
+                    syncCart(); // Refresh keranjang setelah sukses tambah
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function renderCartUI() {
+            const stickyBar = document.getElementById('sticky-cart-bar');
+            const headerCount = document.getElementById('header-cart-count');
+            
+            if (cartData.length === 0) {
+                stickyBar.classList.add('translate-y-32', 'opacity-0');
+                headerCount.classList.add('hidden');
                 return;
             }
 
-            products.forEach(p => {
-                let hargaRp = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(p.price);
-                const randomFood = foodImages[Math.floor(Math.random() * foodImages.length)];
+            let totalQty = 0;
+            let totalPrice = 0;
+            let merchantName = cartData[0].store_name;
 
-                const card = `
-                    <div class="card">
-                        <div class="product-cover">${randomFood}</div>
-                        <div class="product-info">
-                            <h3>${p.name}</h3>
-                            <div class="product-store">📍 ${p.store_name}</div>
-                            <div class="product-footer">
-                                <span class="price">${hargaRp}</span>
-                                <button class="btn-add" onclick="tambahKeKeranjang(${p.product_id}, '${p.name}')" title="Tambah ke keranjang">+</button>
-                            </div>
+            cartData.forEach(item => {
+                totalQty += parseInt(item.quantity);
+                totalPrice += (parseFloat(item.price) * parseInt(item.quantity));
+            });
+
+            document.getElementById('cart-badge').textContent = totalQty;
+            headerCount.textContent = totalQty;
+            headerCount.classList.remove('hidden');
+            
+            document.getElementById('cart-item-count').textContent = totalQty + ' Item';
+            document.getElementById('cart-merchant-label').textContent = 'Pesan dari: ' + merchantName;
+            document.getElementById('cart-total-price').textContent = formatRupiah(totalPrice);
+
+            stickyBar.classList.remove('translate-y-32', 'opacity-0');
+        }
+
+        function toggleCartModal() {
+            const modal = document.getElementById('cart-modal');
+            modal.classList.toggle('hidden');
+            if(!modal.classList.contains('hidden')) renderModalItems();
+        }
+
+        function renderModalItems() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            
+            if(cartData.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-500 font-bold">Keranjang Kosong</p>`;
+                return;
+            }
+
+            cartData.forEach(item => {
+                container.innerHTML += `
+                    <div class="bg-gray-50 p-4 rounded-2xl border flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-sm text-gray-800">${item.product_name}</p>
+                            <p class="text-[#FF6B00] font-bold text-xs">${formatRupiah(item.price)} x ${item.quantity}</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white rounded-xl border p-1">
+                            <button onclick="updateQty(${item.cart_id}, ${item.quantity - 1})" class="w-6 h-6 bg-gray-100 rounded text-gray-600 font-bold">-</button>
+                            <span class="text-xs font-black px-2">${item.quantity}</span>
+                            <button onclick="updateQty(${item.cart_id}, ${item.quantity + 1})" class="w-6 h-6 bg-gray-100 rounded text-gray-600 font-bold">+</button>
                         </div>
                     </div>
                 `;
-                container.innerHTML += card;
             });
         }
 
-        function showError(msg) {
-            document.getElementById('merchantContainer').innerHTML = `<div class="empty-state" style="color:var(--crowd-merah);">${msg}</div>`;
-            document.getElementById('productContainer').innerHTML = `<div class="empty-state" style="color:var(--crowd-merah);">${msg}</div>`;
+        async function updateQty(cartId, newQty) {
+            await fetch(`${API_URL}?action=update_cart`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ cart_id: cartId, quantity: newQty })
+            });
+            await syncCart();
+            renderModalItems();
         }
 
-        function tambahKeKeranjang(id, namaMenu) {
-            alert(`${namaMenu} berhasil ditambahkan ke keranjang! 🛒`);
+        async function processCheckout() {
+            if (cartData.length === 0) return;
+            const mode = document.getElementById('checkout-order-mode').value;
+            
+            const res = await fetch(`${API_URL}?action=checkout`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ order_mode: mode, payment_method: 'qris' })
+            });
+            const json = await res.json();
+            
+            if (json.status === 'success') {
+                alert(json.message);
+                toggleCartModal();
+                syncCart();
+            } else {
+                alert(json.message);
+            }
         }
-
-        window.onload = loadHomeData;
     </script>
 </body>
 </html>
