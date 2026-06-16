@@ -1,8 +1,5 @@
 <?php
 session_start();
-
-
-// Cek apakah yang akses benar-benar seller
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'seller') {
     echo json_encode(["status" => "error", "message" => "Akses Ditolak. Harap login."]);
     exit;
@@ -16,7 +13,7 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 include '../../db_connect.php'; 
 
 // 1. Dapatkan merchant_id dari tabel merchants berdasarkan user_id session
-$user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+$user_id = $_SESSION['user_id'];
 
 $query_sql = "SELECT merchant_id FROM merchants WHERE user_id = $user_id";
 $q_merchant = mysqli_query($conn, $query_sql);
