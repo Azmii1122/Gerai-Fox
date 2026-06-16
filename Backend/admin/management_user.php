@@ -66,7 +66,7 @@ if (isset($_POST['save_user'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola User - Gerai.Fox Admin</title>
+    <title>Kelola User - HubBite Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
         rel="stylesheet">
     <style>
@@ -96,16 +96,7 @@ if (isset($_POST['save_user'])) {
         }
 
         /* SIDEBAR */
-        .sidebar {
-            width: 280px;
-            background: var(--bg-sidebar);
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #E9EDF7;
-            position: fixed;
-            height: 100vh;
-        }
+        .sidebar { width: 280px; background: var(--bg-sidebar); padding: 40px 20px; display: flex; flex-direction: column; border-right: 1px solid #E9EDF7; position: fixed; height: 100vh; }
 
         .brand {
             font-weight: 800;
@@ -113,6 +104,13 @@ if (isset($_POST['save_user'])) {
             color: var(--primary-orange);
             text-align: center;
             margin-bottom: 50px;
+        }
+
+        .nav-links { 
+            list-style: none; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%; 
         }
 
         .nav-links a {
@@ -221,6 +219,14 @@ if (isset($_POST['save_user'])) {
             background: var(--primary-orange);
             color: white;
             margin-top: 20px;
+        }
+
+        /* Tombol logout dibuat otomatis turun ke bawah (margin-top: auto) */
+        .logout-btn { 
+            margin-top: auto; 
+            color: var(--danger) !important; 
+            border: 1px solid #FEEFEE; 
+            background: #FFF5F5; 
         }
 
         .btn-primary:hover {
@@ -343,7 +349,8 @@ if (isset($_POST['save_user'])) {
         <nav class="nav-links">
             <a href="dashboard.php"><span>📊</span> Dashboard</a>
             <a href="management_user.php" class="active"><span>👥</span> Kelola User</a>
-            <a href="../auth-system/logout.php" style="margin-top:auto; color: var(--danger);"><span>🚪</span> Logout</a>
+            <a href="hak_akses.php"><span>🏪</span> Kelola Warung</a>
+            <a href="../auth-system/logout.php" class="logout-btn"><span>🚪</span> Keluar</a>
         </nav>
     </aside>
 

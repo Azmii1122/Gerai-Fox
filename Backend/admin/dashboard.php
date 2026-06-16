@@ -14,6 +14,7 @@ $query_omset = mysqli_query($conn, "SELECT SUM(total_amount) as omset FROM order
 $row_omset = mysqli_fetch_assoc($query_omset);
 $total_omset = $row_omset['omset'] ? $row_omset['omset'] : 0;
 $tot_warung_buka = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM merchants WHERE is_open=1"));
+
 ?>
 
 <!DOCTYPE html>
@@ -104,10 +105,11 @@ $tot_warung_buka = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM merchants 
 <body>
 
     <aside class="sidebar">
-        <div class="brand">🍔 HubBite</div>
+        <div class="brand">HubBite</div>
         <nav class="nav-links">
             <a href="dashboard.php" class="active"><span>📊</span> Dashboard</a>
             <a href="management_user.php"><span>👥</span> Kelola User</a>
+            <a href="hak_akses.php"><span>🏪</span> Kelola Warung</a>
             <a href="../auth-system/logout.php" class="logout-btn"><span>🚪</span> Keluar</a>
         </nav>
     </aside>
@@ -126,7 +128,7 @@ $tot_warung_buka = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM merchants 
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="icon-box bg-orange">💰</div>
-                <h3>Total Omset Selesai</h3>
+                <h3>Total Transaksi</h3>
                 <div class="value">Rp<?= number_format($total_omset, 0, ',', '.') ?></div>
             </div>
 
