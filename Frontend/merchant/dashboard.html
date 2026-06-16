@@ -6,90 +6,122 @@
     <title>Dashboard Gerai Fox</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-orange-50 text-slate-800 font-sans p-8">
+<body class="bg-orange-50/40 text-slate-800 font-sans flex min-h-screen">
 
-    <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-center mb-8">
+    <div class="w-64 bg-[#f8f9fa] border-r border-slate-200 flex flex-col fixed h-full shadow-sm">
+        <div class="p-8">
+            <div class="mb-10 pl-2">
+                <h1 class="text-2xl font-bold text-slate-800 tracking-tight">HubBite</h1>
+            </div>
+
+            <nav class="flex flex-col gap-2">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 bg-orange-100 text-orange-600 rounded-lg font-bold transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                    Dashboard
+                </a>
+
+                <a href="katalog.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-800 rounded-lg font-medium transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    Katalog Menu
+                </a>
+
+                <a href="pesanan.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-800 rounded-lg font-medium transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    Pesanan
+                </a>
+
+                <a href="laporan.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-800 rounded-lg font-medium transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Laporan Keuangan
+                </a>
+
+                <a href="pengaturan.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-800 rounded-lg font-medium transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Pengaturan
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="flex-1 ml-64 p-8">
+        
+        <div class="flex justify-between items-center mb-8 bg-white p-6 rounded-2xl border border-orange-100/50 shadow-sm">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900">Dashboard Penjualan</h1>
-                <p class="text-slate-500">HubBite - Gerai Fox</p>
+                <h2 class="text-2xl font-bold text-slate-900">Dashboard Penjualan</h2>
+                <p class="text-sm text-slate-400">Kelola antrean dan proses memasak makanan dapur</p>
             </div>
             
             <div class="flex gap-4 items-center">
-                <button id="btn-status-warung" onclick="toggleWarung()" class="bg-white border-2 border-slate-200 hover:bg-slate-50 text-sm px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer">
+                <button id="btn-status-warung" onclick="toggleWarung()" class="bg-white border-2 border-slate-200 hover:bg-slate-50 text-sm px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer">
                     <span id="icon-status" class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_6px_#22c55e]"></span>
                     <span id="text-status" class="text-slate-700">Warung Buka</span>
                 </button>
-
-                <a href="laporan.html" class="bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50 hover:shadow text-sm px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2">
-                    📊 Buka Laporan
-                </a>
-                <div class="bg-orange-500 text-white text-sm px-4 py-2 rounded-lg font-bold shadow-sm flex items-center">
+                <div class="bg-orange-500 text-white text-sm px-4 py-2 rounded-xl font-bold shadow-sm flex items-center">
                     Hari Ini
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-4 gap-6 mb-8">
-            <div class="bg-orange-500 text-white p-6 rounded-xl shadow-md">
-                <p class="font-semibold mb-1">Total Orders (Valid)</p>
+            <div class="bg-orange-500 text-white p-6 rounded-2xl shadow-md shadow-orange-500/10">
+                <p class="text-orange-100 font-semibold text-sm mb-1">Total Orders (Valid)</p>
                 <h2 class="text-3xl font-bold" id="stat-orders">0</h2>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-md border border-orange-100">
-                <p class="text-slate-500 font-semibold mb-1">Total Revenue</p>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-orange-100/60">
+                <p class="text-slate-400 font-semibold text-sm mb-1">Total Revenue</p>
                 <h2 class="text-3xl font-bold text-slate-900" id="stat-revenue">Rp 0</h2>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-md border border-orange-100">
-                <p class="text-slate-500 font-semibold mb-1">Delivered</p>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-orange-100/60">
+                <p class="text-slate-400 font-semibold text-sm mb-1">Delivered (Selesai)</p>
                 <h2 class="text-3xl font-bold text-slate-900" id="stat-delivered">0</h2>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-md border border-orange-100">
-                <p class="text-slate-500 font-semibold mb-1">Cancelled</p>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-orange-100/60">
+                <p class="text-slate-400 font-semibold text-sm mb-1">Cancelled (Batal)</p>
                 <h2 class="text-3xl font-bold text-red-500" id="stat-cancelled">0</h2>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-md border border-orange-100 mb-8">
-            <h3 class="text-xl font-bold mb-4">Tambah Pesanan Baru</h3>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-orange-100/60 mb-8">
+            <h3 class="text-lg font-bold mb-4 text-slate-800">Tambah Pesanan Baru (Manual)</h3>
             <form id="form-tambah" onsubmit="tambahPesanan(event)" class="flex gap-4 items-end">
                 <div class="flex-1">
-                    <label class="block text-sm font-semibold text-slate-600 mb-1">Nama Customer</label>
-                    <input type="text" id="input-customer" placeholder="Contoh: Gibran" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500">
+                    <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Nama Customer</label>
+                    <input type="text" id="input-customer" placeholder="Contoh: Gibran" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-orange-500 focus:bg-white transition-all">
                 </div>
                 <div class="flex-1">
-                    <label class="block text-sm font-semibold text-slate-600 mb-1">Menu</label>
-                    <input type="text" id="input-menu" placeholder="Contoh: Nasi Bakar" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500">
+                    <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Menu</label>
+                    <input type="text" id="input-menu" placeholder="Contoh: Nasi Bakar" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-orange-500 focus:bg-white transition-all">
                 </div>
                 <div class="flex-1">
-                    <label class="block text-sm font-semibold text-slate-600 mb-1">Total Harga (Rp)</label>
-                    <input type="number" id="input-harga" placeholder="Contoh: 20000" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-orange-500">
+                    <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Total Harga (Rp)</label>
+                    <input type="number" id="input-harga" placeholder="Contoh: 20000" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-orange-500 focus:bg-white transition-all">
                 </div>
-                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-xl transition-colors shadow-md shadow-orange-500/10 cursor-pointer">
                     Tambah
                 </button>
             </form>
         </div>
 
-        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-orange-100">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="text-xl font-bold">Customer Order</h3>
-                <span class="text-sm text-slate-400">Data mutlak tidak dapat dihapus</span>
+        <div class="bg-white rounded-2xl shadow-sm border border-orange-100/60 overflow-hidden">
+            <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+                <h3 class="text-lg font-bold text-slate-800">Customer Order Antrean</h3>
+                <span class="text-xs font-semibold px-2.5 py-1 bg-slate-200/60 text-slate-500 rounded-full">Real-time Data</span>
             </div>
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-orange-50 text-orange-800">
-                        <th class="p-4 font-semibold">ID</th>
-                        <th class="p-4 font-semibold">Customer</th>
-                        <th class="p-4 font-semibold">Menu</th>
-                        <th class="p-4 font-semibold">Tanggal</th>
-                        <th class="p-4 font-semibold">Status</th>
-                        <th class="p-4 font-semibold">Total</th>
-                        <th class="p-4 font-semibold">Aksi</th>
+                    <tr class="bg-orange-50/60 text-orange-900 border-b border-orange-100/30 text-xs uppercase tracking-wider">
+                        <th class="p-4 font-bold">No</th>
+                        <th class="p-4 font-bold">Customer</th>
+                        <th class="p-4 font-bold">Menu</th>
+                        <th class="p-4 font-bold">Tanggal</th>
+                        <th class="p-4 font-bold">Status Antrean</th>
+                        <th class="p-4 font-bold">Total</th>
+                        <th class="p-4 font-bold text-center">Aksi Operasional</th>
                     </tr>
                 </thead>
                 <tbody id="table-body">
                     <tr>
-                        <td colspan="7" class="p-4 text-center text-slate-500">Memuat data API...</td>
+                        <td colspan="7" class="p-8 text-center text-slate-400">Memuat data API...</td>
                     </tr>
                 </tbody>
             </table>
@@ -97,16 +129,13 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost/Gerai-Fox/Backend/API/pesanan.php'; // API untuk data pesanan
-        const API_STATUS_URL = 'http://localhost/Gerai-Fox/Backend/API/status.php'; // API untuk status warung
+        const API_URL = 'api_pesanan.php';
+        const API_STATUS_URL = 'api_status.php';
 
         const formatRupiah = (angka) => {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
         };
 
-        // ==========================================
-        // FITUR PESANAN (GET, POST, PUT)
-        // ==========================================
         function loadData() {
             fetch(API_URL)
                 .then(response => response.json())
@@ -125,36 +154,62 @@
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
 
-            // PERHATIKAN: Kita tambahin 'index' di sini buat bikin nomor urut palsu
             data.forEach((item, index) => {
                 let statusClass = '';
-                if(item.status === 'Delivered') statusClass = 'bg-green-100 text-green-700';
-                else if(item.status === 'Processed') statusClass = 'bg-yellow-100 text-yellow-700';
-                else if(item.status === 'Cancelled') statusClass = 'bg-red-100 text-red-700';
-
-                // Tombol aksi TETAP pakai item.id asli dari database biar nggak salah ubah data
+                let statusText = '';
                 let aksiBtns = '';
-                if(item.status === 'Processed') {
+
+                if (item.db_status === 'pending') {
+                    statusClass = 'bg-yellow-100 text-yellow-700 border border-yellow-200';
+                    statusText = 'Menunggu';
                     aksiBtns = `
-                        <div class="flex gap-2">
-                            <button onclick="ubahStatusPesanan(${item.id}, 'Delivered')" class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-sm font-bold rounded shadow-sm transition-colors">Terima</button>
-                            <button onclick="ubahStatusPesanan(${item.id}, 'Cancelled')" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-bold rounded shadow-sm transition-colors">Batal</button>
+                        <div class="flex gap-2 justify-center">
+                            <button onclick="gantiStatus(${item.id}, 'cooking')" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg shadow-sm cursor-pointer transition-colors">🔥 Masak</button>
+                            <button onclick="gantiStatus(${item.id}, 'cancel')" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-600 text-xs font-bold rounded-lg cursor-pointer transition-colors">✕ Batal</button>
                         </div>
                     `;
-                } else {
-                    aksiBtns = `<span class="text-xs text-slate-400 italic">No Action</span>`;
+                } 
+                else if (item.db_status === 'cooking') {
+                    statusClass = 'bg-orange-100 text-orange-700 border border-orange-200';
+                    statusText = 'Sedang Dimasak';
+                    aksiBtns = `
+                        <div class="flex gap-2 justify-center">
+                            <button onclick="gantiStatus(${item.id}, 'ready')" class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg shadow-sm cursor-pointer transition-colors">📦 Siap Antar</button>
+                            <button onclick="gantiStatus(${item.id}, 'cancel')" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-600 text-xs font-bold rounded-lg cursor-pointer transition-colors">✕ Batal</button>
+                        </div>
+                    `;
+                } 
+                else if (item.db_status === 'ready') {
+                    statusClass = 'bg-blue-100 text-blue-700 border border-blue-200';
+                    statusText = 'Siap Diantar';
+                    aksiBtns = `
+                        <div class="flex gap-2 justify-center">
+                            <button onclick="gantiStatus(${item.id}, 'completed')" class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg shadow-sm cursor-pointer transition-colors">✅ Selesai</button>
+                            <button onclick="gantiStatus(${item.id}, 'cancel')" class="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-600 text-xs font-bold rounded-lg cursor-pointer transition-colors">✕ Batal</button>
+                        </div>
+                    `;
+                } 
+                else if (item.db_status === 'completed') {
+                    statusClass = 'bg-green-100 text-green-700 border border-green-200';
+                    statusText = 'Delivered';
+                    aksiBtns = `<div class="text-center"><span class="text-xs text-slate-400 italic bg-slate-100 px-2 py-1 rounded-md">Selesai & Aman</span></div>`;
+                } 
+                else if (item.db_status === 'cancel') {
+                    statusClass = 'bg-red-100 text-red-700 border border-red-200';
+                    statusText = 'Cancelled';
+                    aksiBtns = `<div class="text-center"><span class="text-xs text-red-400 italic bg-red-50 px-2 py-1 rounded-md">Dibatalkan</span></div>`;
                 }
 
-                // Kita bikin variabel nomor urut (karena index mulai dari 0, kita tambah 1)
                 let nomorUrut = index + 1;
 
                 const tr = document.createElement('tr');
-                tr.className = 'border-b border-slate-50 hover:bg-slate-50';
+                tr.className = 'border-b border-slate-100 hover:bg-orange-50/20 text-sm transition-colors';
                 tr.innerHTML = `
-                    <td class="p-4 font-bold text-orange-500">${nomorUrut}</td> <td class="p-4 font-semibold">${item.customer_name}</td>
-                    <td class="p-4">${item.menu_name}</td>
-                    <td class="p-4 text-slate-500">${item.order_date}</td>
-                    <td class="p-4"><span class="px-2 py-1 rounded-full text-xs font-bold ${statusClass}">${item.status}</span></td>
+                    <td class="p-4 font-bold text-slate-400">${nomorUrut}</td>
+                    <td class="p-4 font-semibold text-slate-800">${item.customer_name}</td>
+                    <td class="p-4 text-slate-600">${item.menu_name}</td>
+                    <td class="p-4 text-slate-400 text-xs">${item.order_date}</td>
+                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${statusClass}">${statusText}</span></td>
                     <td class="p-4 font-bold text-slate-700">${formatRupiah(item.total_price)}</td>
                     <td class="p-4">${aksiBtns}</td>
                 `;
@@ -165,14 +220,14 @@
         function calculateStats(data) {
             let totalOrders = 0; let totalRevenue = 0; let delivered = 0; let cancelled = 0;
             data.forEach(item => {
-                if (item.status !== 'Cancelled') {
+                if (item.db_status !== 'cancel') {
                     totalOrders++; 
-                    if (item.status === 'Delivered') {
-                        totalRevenue += parseFloat(item.total_price); // Hanya dihitung jika Delivered
+                    if (item.db_status === 'completed') {
+                        totalRevenue += parseFloat(item.total_price);
                     }
                 }
-                if (item.status === 'Delivered') delivered++;
-                if (item.status === 'Cancelled') cancelled++;
+                if (item.db_status === 'completed') delivered++;
+                if (item.db_status === 'cancel') cancelled++;
             });
             document.getElementById('stat-orders').innerText = totalOrders;
             document.getElementById('stat-revenue').innerText = formatRupiah(totalRevenue);
@@ -180,26 +235,26 @@
             document.getElementById('stat-cancelled').innerText = cancelled;
         }
 
-        function ubahStatusPesanan(idPesanan, statusBaru) {
-            let pesanTanya = statusBaru === 'Delivered' 
-                ? "Tandai pesanan ini selesai dan masukkan ke Total Revenue?" 
-                : "Yakin ingin membatalkan pesanan ini?";
+        function gantiStatus(idPesanan, statusTarget) {
+            let pesan = "Ubah status antrean pesanan ini?";
+            if (statusTarget === 'completed') pesan = "Konfirmasi pesanan selesai? Pendapatan otomatis masuk laporan.";
+            if (statusTarget === 'cancel') pesan = "Yakin ingin membatalkan pesanan ini?";
 
-            if (confirm(pesanTanya)) {
+            if (confirm(pesan)) {
                 fetch(API_URL, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: idPesanan, status: statusBaru })
+                    body: JSON.stringify({ id: idPesanan, status: statusTarget })
                 })
                 .then(response => response.json())
                 .then(res => {
                     if (res.status === 'success') {
                         loadData(); 
                     } else {
-                        alert("Gagal membatalkan: " + res.message);
+                        alert("Gagal update status: " + res.message);
                     }
                 })
-                .catch(err => console.error("Error PUT:", err));
+                .catch(err => console.error("Error PUT Status:", err));
             }
         }
 
@@ -209,17 +264,10 @@
             const menu = document.getElementById('input-menu').value;
             const harga = document.getElementById('input-harga').value;
 
-            const newData = {
-                customer_name: customer,
-                menu_name: menu,
-                total_price: harga,
-                payment_method: 'Tunai'
-            };
-
             fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newData)
+                body: JSON.stringify({ customer_name: customer, menu_name: menu, total_price: harga })
             })
             .then(response => response.json())
             .then(res => {
@@ -234,9 +282,6 @@
             .catch(err => console.error("Error POST:", err));
         }
 
-        // ==========================================
-        // FITUR STATUS WARUNG (GET, PUT)
-        // ==========================================
         let currentStatus = 'Buka'; 
 
         function loadStatusWarung() {
@@ -264,8 +309,6 @@
                 if (res.status === 'success') {
                     currentStatus = statusBaru; 
                     updateStatusUI(currentStatus); 
-                } else {
-                    alert("Gagal mengubah status di database");
                 }
             })
             .catch(err => console.error("Error PUT Status:", err));
@@ -278,19 +321,10 @@
             if (status === 'Buka') {
                 icon.className = 'w-3 h-3 rounded-full bg-green-500 shadow-[0_0_6px_#22c55e] transition-all';
                 text.innerText = 'Warung Buka';
-                text.className = 'text-slate-700';
             } else {
                 icon.className = 'w-3 h-3 rounded-full bg-slate-400 transition-all';
                 text.innerText = 'Warung Tutup';
-                text.className = 'text-slate-400';
             }
         }
 
-        // Jalankan kedua fungsi saat web pertama kali dibuka
-        window.onload = function() {
-            loadData();
-            loadStatusWarung();
-        };
-    </script>
-</body>
-</html>
+        window

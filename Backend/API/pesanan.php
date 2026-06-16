@@ -78,11 +78,8 @@ switch ($method) {
 
     case 'PUT':
         $id = mysqli_real_escape_string($conn, $input['id']);
-        $ui_status = mysqli_real_escape_string($conn, $input['status']); 
-        
-        $db_status = 'pending';
-        if($ui_status == 'Delivered') $db_status = 'completed';
-        if($ui_status == 'Cancelled') $db_status = 'cancel';
+        // Langsung terima status murni ('cooking', 'ready', 'completed', 'cancel')
+        $db_status = mysqli_real_escape_string($conn, $input['status']); 
 
         $query = "UPDATE orders SET status = '$db_status' WHERE order_id = '$id'";
         if (mysqli_query($conn, $query)) {
@@ -90,6 +87,7 @@ switch ($method) {
         } else {
             echo json_encode(["status" => "error", "message" => mysqli_error($conn)]);
         }
+        break;
         break;
 }
 mysqli_close($conn);
