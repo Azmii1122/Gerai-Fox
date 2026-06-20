@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'seller') {
+    header("Location: ../../Frontend/auth/login.html");
+    exit;
+}
 error_reporting(0);
 ini_set('display_errors', 0);
 
@@ -10,18 +15,12 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(); }
 
 // Ganti "menus" dengan nama database utama Anda jika sudah berubah
-$conn = mysqli_connect("localhost", "root", "", "menus");
-
-if (!$conn) {
-    echo json_encode(["status" => "error", "message" => "DB Error: " . mysqli_connect_error()]);
-    exit();
-}
+include '../../db_connect.php';
 
 $input = json_decode(file_get_contents("php://input"), true);
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Simulasi user yang sedang login (ID = 1)
-$user_id = 1;
+$user_id = $_SESSION['user_id'];
 
 // --- 1. METHOD GET ---
 if ($method === 'GET') {
