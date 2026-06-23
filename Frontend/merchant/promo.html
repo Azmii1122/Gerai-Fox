@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kupon Promo - Gerai Fox</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --fox-50: #fff3e0;
+            --fox-500: #f97316;
+            --fox-600: #ea580c;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { color: var(--slate-800); background-color: var(--slate-50); display: flex; min-height: 100vh; }
+
+        /* SIDEBAR COMPONENT KONSISTEN */
+        .sidebar { width: 256px; background-color: #ffffff; border-right: 1px solid var(--slate-200); position: fixed; height: 100%; display: flex; flex-direction: column; padding: 2rem 1.5rem; }
+        .sidebar-brand h1 { font-size: 1.5rem; font-weight: 700; color: var(--slate-900); margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .sidebar-brand i { color: var(--fox-500); }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+        .nav-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 0.5rem; color: var(--slate-500); text-decoration: none; font-weight: 500; transition: all 0.2s; }
+        .nav-link:hover { background-color: var(--slate-50); color: var(--slate-900); }
+        .nav-link.active { background-color: var(--fox-50); color: var(--fox-600); font-weight: 700; }
+
+        /* APP SECTION MAIN WRAPPER */
+        .main-wrapper { flex: 1; margin-left: 256px; padding: 2rem; }
+        
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: #ffffff; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--slate-200); }
+        .top-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--slate-900); }
+        .top-header p { font-size: 0.875rem; color: var(--slate-400); margin-top: 0.25rem; }
+
+        /* INTERFACES FOR FORMS & TABLES */
+        .panel-flex { display: flex; flex-direction: column; gap: 1.5rem; }
+        .card-panel { background: #ffffff; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--slate-200); }
+        .panel-title { font-size: 1rem; font-weight: 700; color: var(--slate-800); margin-bottom: 1.25rem; }
+        
+        .form-inline { display: flex; gap: 1rem; align-items: flex-end; }
+        .form-group { display: flex; flex-direction: column; gap: 0.375rem; flex: 1; }
+        .form-label { font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; }
+        .form-input { width: 100%; padding: 0.625rem 1rem; background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 0.75rem; font-size: 0.875rem; outline: none; }
+        .form-input:focus { border-color: var(--fox-500); background-color: white; }
+        
+        .btn-submit { padding: 0.625rem 1.5rem; font-size: 0.875rem; font-weight: 700; border-radius: 0.75rem; cursor: pointer; border: none; background-color: var(--fox-500); color: white; transition: 0.2s; height: 38px; }
+        .btn-submit:hover { background-color: var(--fox-600); }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; }
+        th { background-color: var(--slate-50); color: var(--slate-700); padding: 1rem; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; border-bottom: 1px solid var(--slate-200); }
+        td { padding: 1rem; border-bottom: 1px solid var(--slate-100); color: var(--slate-800); }
+        .badge-code { background-color: #f0fdf4; color: #16a34a; font-family: monospace; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 0.25rem; border: 1px solid #bbf7d0; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <h1><i class="fa-solid fa-fox"></i> HubBite</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-link">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="../management-product/product.html" class="nav-link">
+                <i class="fa-solid fa-book-open"></i> Katalog Menu
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fa-solid fa-receipt"></i> Pesanan
+            </a>
+            <a href="promo.html" class="nav-link active">
+                <i class="fa-solid fa-tags"></i> Diskon & Promo
+            </a>
+        </nav>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="top-header">
+            <div>
+                <h2>Manajemen Kupon Diskon</h2>
+                <p>Terbitkan voucher potongan harga untuk meningkatkan retensi pembeli kampus</p>
+            </div>
+        </header>
+
+        <div class="panel-flex">
+            <div class="card-panel">
+                <div class="panel-title">Buat Voucher Baru</div>
+                <form id="formPromo" onsubmit="terbitkanPromo(event)" class="form-inline">
+                    <div class="form-group">
+                        <label class="form-label">Kode Kupon</label>
+                        <input type="text" id="promo_code" required placeholder="Contoh: KENYANG5K" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nominal Potongan (Rp)</label>
+                        <input type="number" id="discount_amount" required placeholder="5000" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Minimal Belanja (Rp)</label>
+                        <input type="number" id="min_purchase" required placeholder="20000" class="form-input">
+                    </div>
+                    <button type="submit" class="btn-submit">Terbitkan</button>
+                </form>
+            </div>
+
+            <div class="card-panel">
+                <div class="panel-title">Kupon Aktif Warung Anda</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Kode Voucher</th>
+                            <th>Besar Diskon</th>
+                            <th>Minimal Pembelian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablePromoBody">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--slate-400);">Menghubungkan asinkronus ke API...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost/Gerai-Fox/Backend/API/promo.php';
+        const API_KEY = '12345'; 
+
+        const formatRp = (angka) => "Rp " + new Intl.NumberFormat('id-ID').format(angka);
+
+        document.addEventListener('DOMContentLoaded', loadPromo);
+
+        function loadPromo() {
+            fetch(API_URL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-KEY': API_KEY // Suntikkan API Key di header
+                }
+            })
+            .then(res => res.json())
+            .then(res => {
+                const tbody = document.getElementById('tablePromoBody');
+                tbody.innerHTML = '';
+
+                if (res.status === 'success') {
+                    if (res.data.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--slate-400);">Belum ada kupon diskon diterbitkan.</td></tr>`;
+                        return;
+                    }
+                    res.data.forEach((p, idx) => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td style="font-weight:bold; color:var(--slate-400);">${idx + 1}</td>
+                                <td><span class="badge-code">${p.code}</span></td>
+                                <td style="font-weight:700; color:#16a34a;">-${formatRp(p.discount_amount)}</td>
+                                <td style="font-weight:600; color:var(--slate-700);">${formatRp(p.min_purchase)}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    alert("Ditolak Endpoint: " + res.message);
+                }
+            })
+            .catch(err => console.error("Error Get Promo:", err));
+        }
+
+        function terbitkanPromo(e) {
+            e.preventDefault();
+            
+            const payload = {
+                promo_code: document.getElementById('promo_code').value,
+                discount_amount: document.getElementById('discount_amount').value,
+                min_purchase: document.getElementById('min_purchase').value
+            };
+
+            fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-KEY': API_KEY // Suntikkan API Key di header
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    alert(res.message);
+                    document.getElementById('formPromo').reset();
+                    loadPromo(); // Refresh tabel asinkronus
+                } else {
+                    alert("Gagal menerbitkan: " + res.message);
+                }
+            })
+            .catch(err => console.error("Error Post Promo:", err));
+        }
+    </script>
+</body>
+</html>

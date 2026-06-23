@@ -9,7 +9,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] != 'seller') {
         exit;
     } else {
         // Jika diakses via browser, arahkan ke login
-        echo "<script>alert('Akses Ditolak. Harap login sebagai penjual.'); window.location.href='../../Frontend/auth/login.html';</script>";
+        echo "<script>alert('Akses Ditolak. Harap login sebagai penjual.'); window.location.href='../../../Frontend/auth/login.html';</script>";
         exit;
     }
 }
@@ -899,7 +899,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'api') {
                 <h2>HubBite</h2>
             </div>
             <nav class="sidebar-nav">
-                <a href="../dashboard.html" class="nav-link">
+                <a href="http://localhost/Gerai-Fox/Frontend/merchant/dashboard.html" class="nav-link">
                     <i class="fa-solid fa-chart-pie w-5"></i> Dashboard
                 </a>
                 <a href="product.php" class="nav-link active">
@@ -908,7 +908,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'api') {
                 <a href="#" class="nav-link">
                     <i class="fa-solid fa-receipt w-5"></i> Pesanan
                 </a>
-                <a href="profilewrg.html" class="nav-link">
+                <a href="http://localhost/Gerai-Fox/Frontend/merchant/management-product/profilewrg.html" class="nav-link">
                     <i class="fa-solid fa-gear w-5"></i> Pengaturan
                 </a>
                 <a href="/Gerai-Fox/Frontend/merchant/laporan/laporan.html" class="nav-link">
