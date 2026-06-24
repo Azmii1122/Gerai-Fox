@@ -23,7 +23,7 @@ if (isset($_POST['login'])) {
         } else if ($row['role'] == 'seller') {
             header("Location: ../../Frontend/merchant/dashboard.html");
         } else {
-            header("Location: ../../Frontend/buyer/home.html");
+            header("Location: ../../Frontend/buyer/gabungan.html");
         }
     } else {
         header("Location: ../../Frontend/auth/login.html");
