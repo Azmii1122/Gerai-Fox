@@ -2,52 +2,277 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Checkout - HubBite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Pesanan - HubBite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: #fff; border-radius: 1rem; width: 100%; max-width: 450px; padding: 2rem; border: 1px solid #e2e8f0; }
-        .row { display: flex; justify-content: space-between; border-bottom: 1px dashed #e2e8f0; padding: 0.75rem 0; }
-        .btn { width: 100%; background: #16a34a; color: #fff; border: none; padding: 1rem; border-radius: 1rem; font-weight: 700; margin-top: 1.5rem; cursor: pointer; font-size: 1rem; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F9FAFB; }
     </style>
 </head>
-<body>
-    <div class="card">
-        <h2 style="text-align:center; margin-bottom: 1.5rem;">Konfirmasi Pembayaran</h2>
-        <div id="c-list"></div>
-        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.2rem; margin-top:1rem; padding-top:1rem; border-top:2px solid #f1f5f9;">
-            <span>Total Bayar</span><span id="c-total">Rp 0</span>
+<body class="min-h-screen">
+
+    <!-- HEADER CHECKOUT -->
+    <header class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
+            <button onclick="window.location.href='katalog.html'" class="flex items-center gap-2 text-gray-500 hover:text-[#FF6B00] font-bold text-sm transition-all">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i> Kembali
+            </button>
+            <span class="text-xl font-black text-[#FF6B00] tracking-tight">Checkout</span>
+            <div class="w-5 h-5"></div> <!-- Spacer untuk menyeimbangkan flexbox -->
         </div>
-        <button class="btn" onclick="bayarSekarang()">Bayar & Antre Sekarang</button>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-8">
+        
+        <!-- WRAPPER FORM -->
+        <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 flex flex-col">
+            
+            <div class="p-6 bg-gradient-to-r from-orange-500 to-[#FF6B00] text-white">
+                <h3 class="font-black text-xl">Lengkapi Pesananmu</h3>
+                <p class="text-xs text-white/80 font-medium mt-1">Selesaikan pembayaran untuk segera diproses gerai.</p>
+            </div>
+
+            <div class="p-6 md:p-8 space-y-8">
+                
+                <!-- SUMMARY ITEM -->
+                <div class="space-y-4">
+                    <div class="bg-orange-50 text-[#FF6B00] px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2 border border-orange-100">
+                        <i data-lucide="store" class="w-4 h-4"></i>
+                        <span>Dipesan dari: <strong id="cart-merchant-name">Memuat...</strong></span>
+                    </div>
+
+                    <h4 class="text-sm font-bold text-gray-800">Rincian Item</h4>
+                    <div id="cart-items-list-container" class="space-y-3 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <p class="text-xs text-gray-500 text-center"><i data-lucide="loader" class="w-4 h-4 animate-spin mx-auto"></i></p>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100 border-dashed">
+
+                <!-- ORDER MODE -->
+                <div class="space-y-3">
+                    <label class="text-sm font-bold text-gray-800 block">Metode Pengiriman</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <button onclick="setOrderMode('delivery')" id="mode-btn-delivery" class="order-mode-btn p-3 rounded-2xl border bg-orange-50 border-[#FF6B00] text-[#FF6B00] text-center text-sm font-bold flex items-center justify-center gap-2">
+                            <i data-lucide="truck" class="w-5 h-5"></i> Delivery
+                        </button>
+                        <button onclick="setOrderMode('takeaway')" id="mode-btn-takeaway" class="order-mode-btn p-3 rounded-2xl border border-gray-200 text-gray-600 bg-white text-center text-sm font-bold flex items-center justify-center gap-2">
+                            <i data-lucide="hand-metal" class="w-5 h-5"></i> Takeaway
+                        </button>
+                        <button onclick="setOrderMode('dine_in_qr')" id="mode-btn-dine_in_qr" class="order-mode-btn p-3 rounded-2xl border border-gray-200 text-gray-600 bg-white text-center text-sm font-bold flex items-center justify-center gap-2">
+                            <i data-lucide="qr-code" class="w-5 h-5"></i> Dine In
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PAYMENT METHOD -->
+                <div class="space-y-3">
+                    <label class="text-sm font-bold text-gray-800 block">Metode Pembayaran</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <button onclick="setPaymentMethod('qris')" id="pay-btn-qris" class="pay-method-btn p-4 rounded-2xl border bg-orange-50 border-[#FF6B00] text-[#FF6B00] text-center text-sm font-bold flex items-center justify-center gap-2">
+                            <span class="px-2 py-1 bg-purple-700 text-white font-extrabold text-[10px] rounded">QRIS</span> QRIS E-Wallet
+                        </button>
+                        <button onclick="setPaymentMethod('cash')" id="pay-btn-cash" class="pay-method-btn p-4 rounded-2xl border border-gray-200 text-gray-600 bg-white text-center text-sm font-bold flex items-center justify-center gap-2">
+                            <i data-lucide="banknote" class="w-5 h-5"></i> Tunai (Cash)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PRIORITY TOGGLE -->
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-[#FF6B00]/10 p-2.5 rounded-xl text-[#FF6B00]"><i data-lucide="zap" class="w-5 h-5 fill-current"></i></div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-800">Layanan Ekstra Prioritas</p>
+                            <p class="text-xs text-gray-500 font-medium mt-0.5">Antrean didahulukan (+Rp 2.000)</p>
+                        </div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="is-priority-toggle" class="sr-only peer" onchange="calculateInvoiceDetails()">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-[#FF6B00] peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                    </label>
+                </div>
+                
+                <hr class="border-gray-100">
+
+                <!-- INVOICE CALCULATION -->
+                <div class="space-y-3 text-sm font-medium text-gray-600 bg-gray-50 p-6 rounded-3xl border border-gray-100">
+                    <div class="flex justify-between"><span>Subtotal Makanan</span><span id="bill-subtotal" class="font-bold text-gray-800">Rp 0</span></div>
+                    <div class="flex justify-between"><span>Biaya Layanan/Ongkir</span><span id="bill-shipping" class="font-bold text-gray-800">Rp 0</span></div>
+                    <div class="flex justify-between hidden" id="bill-priority-row"><span>Ekstra Prioritas</span><span id="bill-priority" class="font-bold text-[#FF6B00]">Rp 2.000</span></div>
+                    
+                    <div class="flex justify-between items-center text-lg font-black text-gray-800 border-t border-gray-200 pt-4 mt-2">
+                        <span>Total Pembayaran</span>
+                        <span id="bill-total" class="text-2xl text-[#FF6B00]">Rp 0</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- BUTTON SUBMIT -->
+            <div class="p-6 md:p-8 border-t border-gray-100 bg-white">
+                <button onclick="processCheckout()" id="btn-checkout-process" class="w-full py-4 bg-[#FF6B00] hover:bg-orange-600 text-white font-bold text-base rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> Konfirmasi & Buat Pesanan
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" class="fixed top-6 right-4 bg-gray-900 text-white px-5 py-4 rounded-2xl shadow-2xl z-50 flex items-center gap-3 transform translate-x-96 transition-all duration-300 max-w-sm pointer-events-none">
+        <div class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center" id="toast-icon-container"><i data-lucide="check" class="w-4 h-4"></i></div>
+        <div>
+            <p id="toast-title" class="font-extrabold text-xs">Sukses!</p>
+            <p id="toast-message" class="text-[11px] text-gray-300 font-medium">Notifikasi</p>
+        </div>
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // ⬇️ SESUAIKAN URL API KAMU DI SINI ⬇️
-        const API_KEY = '12345';
-        const API_CART = 'http://localhost/Gerai-Fox/Backend/API/cart_api.php';
-        const API_CHECKOUT = 'http://localhost/Gerai-Fox/Backend/API/checkout_api.php';
+        // CONFIGURATION URLS API
+        const BASE_URL = 'http://localhost/api'; // Sesuaikan folder API kamu
+        const API_CART = `${BASE_URL}/cart_api.php`;
+        const API_CHECKOUT = `${BASE_URL}/checkout_api.php`;
+
+        // STATE
+        let currentCartData = [];
+        let selectedOrderMode = "delivery";
+        let selectedPaymentMethod = "qris";
 
         document.addEventListener('DOMContentLoaded', () => {
-            fetch(API_CART, { headers: { 'X-API-KEY': API_KEY } })
-            .then(res => res.json()).then(res => {
-                const list = document.getElementById('c-list');
-                let total = 0; list.innerHTML = '';
-                if(res.status === 'success' && res.data.length > 0) {
-                    res.data.forEach(i => {
-                        const sub = i.price * i.quantity; total += sub;
-                        list.innerHTML += `<div class="row"><span>${i.name} (${i.quantity}x)</span><span style="font-weight:600;">Rp ${sub.toLocaleString('id-ID')}</span></div>`;
-                    });
-                    document.getElementById('c-total').innerText = 'Rp ' + total.toLocaleString('id-ID');
-                }
-            });
+            lucide.createIcons();
+            fetchCartData();
         });
 
-        function bayarSekarang() {
-            fetch(API_CHECKOUT, { method: 'POST', headers: { 'X-API-KEY': API_KEY } })
-            .then(res => res.json()).then(res => {
-                if(res.status === 'success') { alert("Berhasil!"); window.location.href='home.html'; }
-                else { alert(res.message); }
+        function formatRp(angka) {
+            return new Intl.NumberFormat('id-ID').format(angka);
+        }
+
+        // Fetch Data Keranjang
+        function fetchCartData() {
+            fetch(API_CART)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        currentCartData = data.data;
+                        if (currentCartData.length === 0) {
+                            showToast("Info", "Keranjang kosong. Mengalihkan kembali...", false);
+                            setTimeout(() => { window.location.href = 'katalog.html'; }, 2000);
+                        } else {
+                            renderCartItems();
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error("Cart Fetch Error:", err);
+                    document.getElementById('cart-items-list-container').innerHTML = '<p class="text-red-500 text-sm">Gagal memuat keranjang.</p>';
+                });
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cart-items-list-container');
+            container.innerHTML = '';
+            document.getElementById('cart-merchant-name').textContent = currentCartData[0].store_name;
+
+            currentCartData.forEach(item => {
+                container.innerHTML += `
+                    <div class="flex justify-between items-center pb-2 mb-2 border-b border-gray-200 last:border-0 last:pb-0 last:mb-0">
+                        <div class="flex-1">
+                            <span class="font-bold text-gray-800 text-sm">${item.product_name}</span>
+                            <div class="text-xs text-gray-500 font-medium">${item.quantity}x @ Rp ${formatRp(item.price)}</div>
+                        </div>
+                        <div class="font-extrabold text-sm text-gray-800">Rp ${formatRp(item.price * item.quantity)}</div>
+                    </div>
+                `;
             });
+            calculateInvoiceDetails();
+        }
+
+        function setOrderMode(mode) {
+            selectedOrderMode = mode;
+            document.querySelectorAll('.order-mode-btn').forEach(btn => {
+                btn.className = "order-mode-btn p-3 rounded-2xl border border-gray-200 text-gray-600 bg-white text-center text-sm font-bold flex items-center justify-center gap-2 transition-all";
+            });
+            document.getElementById(`mode-btn-${mode}`).className = "order-mode-btn p-3 rounded-2xl border bg-orange-50 border-[#FF6B00] text-[#FF6B00] text-center text-sm font-bold flex items-center justify-center gap-2 transition-all";
+            calculateInvoiceDetails();
+        }
+
+        function setPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.pay-method-btn').forEach(btn => {
+                btn.className = "pay-method-btn p-4 rounded-2xl border border-gray-200 text-gray-600 bg-white text-center text-sm font-bold flex items-center justify-center gap-2 transition-all";
+            });
+            document.getElementById(`pay-btn-${method}`).className = "pay-method-btn p-4 rounded-2xl border bg-orange-50 border-[#FF6B00] text-[#FF6B00] text-center text-sm font-bold flex items-center justify-center gap-2 transition-all";
+        }
+
+        function calculateInvoiceDetails() {
+            let subtotal = 0;
+            currentCartData.forEach(i => subtotal += (i.price * i.quantity));
+            
+            // Logika: Dine In gratis ongkir
+            const shipping = selectedOrderMode === 'dine_in_qr' ? 0 : 4000;
+            const isPriority = document.getElementById('is-priority-toggle').checked;
+            const priorityCost = isPriority ? 2000 : 0;
+            
+            document.getElementById('bill-priority-row').className = isPriority ? "flex justify-between" : "flex justify-between hidden";
+            document.getElementById('bill-subtotal').textContent = `Rp ${formatRp(subtotal)}`;
+            document.getElementById('bill-shipping').textContent = `Rp ${formatRp(shipping)}`;
+            document.getElementById('bill-total').textContent = `Rp ${formatRp(subtotal + shipping + priorityCost)}`;
+        }
+
+        function processCheckout() {
+            if (currentCartData.length === 0) return;
+            const btn = document.getElementById('btn-checkout-process');
+            btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Sedang Memproses...`;
+            btn.disabled = true;
+
+            fetch(API_CHECKOUT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    order_mode: selectedOrderMode,
+                    payment_method: selectedPaymentMethod,
+                    is_priority: document.getElementById('is-priority-toggle').checked
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showToast("Checkout Berhasil!", `Pesanan #${data.order_id} berhasil dibuat.`, true);
+                    // Redirect kembali ke katalog setelah 2 detik
+                    setTimeout(() => { window.location.href = 'katalog.html'; }, 2000);
+                } else {
+                    btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Konfirmasi & Buat Pesanan`;
+                    btn.disabled = false;
+                    showToast("Gagal", data.message, false);
+                }
+            }).catch(err => {
+                btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Konfirmasi & Buat Pesanan`;
+                btn.disabled = false;
+                showToast("Error Sistem", "Tidak dapat menghubungi server.", false);
+            });
+        }
+
+        function showToast(title, msg, isSuccess) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-message').textContent = msg;
+            
+            const iconBox = document.getElementById('toast-icon-container');
+            iconBox.className = isSuccess 
+                ? "w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center" 
+                : "w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center";
+            iconBox.innerHTML = isSuccess ? '<i data-lucide="check" class="w-4 h-4"></i>' : '<i data-lucide="alert-circle" class="w-4 h-4"></i>';
+            lucide.createIcons();
+
+            toast.classList.remove('translate-x-96');
+            toast.classList.add('translate-x-0');
+            setTimeout(() => {
+                toast.classList.remove('translate-x-0');
+                toast.classList.add('translate-x-96');
+            }, 3500);
         }
     </script>
 </body>

@@ -1,51 +1,67 @@
 <?php
 session_start();
-header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type, X-API-KEY");
 
-include '../db_connect.php';
+include '../db_connect.php'; 
 
-if ((getallheaders()['X-API-KEY'] ?? '') !== '12345') {
-    echo json_encode(["status" => "error", "message" => "API Key Invalid"]); exit;
-}
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(["status" => "error", "message" => "Unauthorized"]); exit;
-}
-
-$user_id = (int)$_SESSION['user_id'];
-$buyer_email = mysqli_real_escape_string($conn, $_SESSION['email']);
+$user_id = 1; 
+$buyer_email = 'buyer@hubbite.com';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $q_cart = mysqli_query($conn, "SELECT c.product_id, c.quantity, c.merchant_id, p.price FROM cart_items c JOIN products p ON c.product_id = p.product_id WHERE c.user_id = $user_id");
+    $input = json_decode(file_get_contents('php://input'), true);
     
-    if (mysqli_num_rows($q_cart) === 0) {
-        echo json_encode(["status" => "error", "message" => "Keranjang kosong"]); exit;
-    }
-
-    $total_amount = 0; $merchant_id = 0; $items = [];
-    while ($row = mysqli_fetch_assoc($q_cart)) {
-        $merchant_id = $row['merchant_id'];
-        $total_amount += ($row['price'] * $row['quantity']);
-        $items[] = $row;
-    }
-
     mysqli_begin_transaction($conn);
     try {
-        mysqli_query($conn, "INSERT INTO orders (merchant_id, buyer_id, buyer_email, order_mode, payment_method, status, total_amount) VALUES ($merchant_id, $user_id, '$buyer_email', 'takeaway', 'cash', 'pending', $total_amount)");
-        $order_id = mysqli_insert_id($conn);
-
-        foreach ($items as $item) {
-            mysqli_query($conn, "INSERT INTO order_items (order_id, product_id, quantity) VALUES ($order_id, {$item['product_id']}, {$item['quantity']})");
+        // Ambil data keranjang
+        $resCart = mysqli_query($conn, "SELECT c.*, p.price, p.merchant_id FROM cart_items c JOIN products p ON c.product_id = p.product_id WHERE c.user_id = $user_id");
+        $subtotal = 0; 
+        $items = [];
+        
+        while ($r = mysqli_fetch_assoc($resCart)) { 
+            $subtotal += ($r['price'] * $r['quantity']); 
+            $items[] = $r; 
         }
+        
+        if (empty($items)) throw new Exception("Keranjang belanja kosong!");
+
+        // Parameter Checkout
+        $mid = $items[0]['merchant_id'];
+        $order_mode = mysqli_real_escape_string($conn, $input['order_mode']); 
+        $payment_method = mysqli_real_escape_string($conn, $input['payment_method']); 
+        $is_priority = isset($input['is_priority']) && $input['is_priority'] ? 1 : 0;
+        
+        // Kalkulasi Total (Biaya Ongkir/Prioritas)
+        $ongkir = ($order_mode == 'dine_in_qr') ? 0 : 4000;
+        $biaya_prioritas = $is_priority ? 2000 : 0;
+        $total_amount = $subtotal + $ongkir + $biaya_prioritas;
+        
+        $status = ($payment_method == 'qris' ? 'paid' : 'pending');
+
+        // Insert ke tabel orders
+        $qOrder = "INSERT INTO orders (buyer_id, buyer_email, merchant_id, order_mode, payment_method, status, total_amount) 
+                   VALUES ($user_id, '$buyer_email', $mid, '$order_mode', '$payment_method', '$status', $total_amount)";
+                   
+        if(!mysqli_query($conn, $qOrder)) throw new Exception("Gagal membuat data pesanan utama.");
+        $oid = mysqli_insert_id($conn);
+
+        // Insert ke tabel order_items
+        foreach ($items as $it) {
+            $pid = $it['product_id'];
+            $qty = $it['quantity'];
+            $notes = mysqli_real_escape_string($conn, $it['notes'] ?? '');
+            mysqli_query($conn, "INSERT INTO order_items (order_id, product_id, quantity, notes) VALUES ($oid, $pid, $qty, '$notes')");
+        }
+        
+        // Bersihkan keranjang belanja
         mysqli_query($conn, "DELETE FROM cart_items WHERE user_id = $user_id");
+        
         mysqli_commit($conn);
-        echo json_encode(["status" => "success"]);
+        echo json_encode(["status" => "success", "order_id" => $oid]);
     } catch (Exception $e) {
         mysqli_rollback($conn);
         echo json_encode(["status" => "error", "message" => $e->getMessage()]);
     }
 }
-mysqli_close($conn);
 ?>
