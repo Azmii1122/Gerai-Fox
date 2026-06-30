@@ -1,26 +1,46 @@
 <?php
 session_start();
+ob_clean(); // Membersihkan output buffer agar pesan error PHP/HTML tidak merusak format JSON
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
+// Handle Preflight Request dari Browser (Mencegah Error Failed to Fetch pada fungsi Add to Cart)
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 include '../db_connect.php'; 
 
-// Hardcode user untuk keperluan testing (sesuai arahan file pembelian.php)
-$user_id = 1; 
-$user_email = 'buyer@hubbite.com';
+// Gunakan session asli (dinamis) dari login teman kamu
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(["status" => "error", "message" => "Sesi login tidak terdeteksi. Silakan login terlebih dahulu."]);
+    exit;
+}
+
+$user_id = (int)$_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    // AMBIL ISI KERANJANG BESERTA DETAIL PRODUKNYA
-    $query = "SELECT c.cart_id, c.quantity, c.notes, p.product_id, p.name as product_name, p.price, p.image, m.merchant_id, m.store_name 
+    // AMBIL ISI KERANJANG
+    // Menggunakan c.buyer_id sesuai dengan struktur tabel database
+    $query = "SELECT c.quantity, p.product_id, p.name as product_name, p.price, m.store_name 
               FROM cart_items c 
               JOIN products p ON c.product_id = p.product_id 
               JOIN merchants m ON p.merchant_id = m.merchant_id
-              WHERE c.user_id = $user_id"; // Ubah c.user_id atau c.buyer_id sesuai nama kolom di database temanmu
+              WHERE c.buyer_id = $user_id"; 
               
     $result = mysqli_query($conn, $query);
+    
+    // Menangkap error SQL agar tampil rapi sebagai JSON
+    if (!$result) {
+        echo json_encode(["status" => "error", "message" => "SQL Error: " . mysqli_error($conn)]);
+        exit;
+    }
+    
     $data = [];
     while ($row = mysqli_fetch_assoc($result)) {
         $data[] = $row;
@@ -28,10 +48,7 @@ if ($method === 'GET') {
     echo json_encode(["status" => "success", "data" => $data]);
 
 } elseif ($method === 'POST') {
-    // TAMBAH / UPDATE KERANJANG
     $input = json_decode(file_get_contents('php://input'), true);
-    
-    // Cek apakah ini aksi UPDATE QTY atau ADD TO CART
     $action = isset($input['action']) ? $input['action'] : 'add';
     $p_id = (int)($input['product_id'] ?? 0);
 
@@ -41,47 +58,58 @@ if ($method === 'GET') {
     }
 
     if ($action === 'add') {
-        // ATURAN GOFOOD: Hanya bisa 1 gerai
+        // ATURAN GOFOOD: Hanya bisa pesan dari 1 gerai sekaligus
         $target_res = mysqli_query($conn, "SELECT merchant_id FROM products WHERE product_id = $p_id");
-        $target_m = mysqli_fetch_assoc($target_res)['merchant_id'];
+        if ($target_res && mysqli_num_rows($target_res) > 0) {
+            $target_m = mysqli_fetch_assoc($target_res)['merchant_id'];
+            
+            // Cek isi keranjang saat ini menggunakan buyer_id
+            $check_m = mysqli_query($conn, "SELECT p.merchant_id FROM cart_items c JOIN products p ON c.product_id = p.product_id WHERE c.buyer_id = $user_id LIMIT 1");
+            $exist_m = mysqli_fetch_assoc($check_m);
 
-        // Cek isi keranjang saat ini
-        $check_m = mysqli_query($conn, "SELECT p.merchant_id FROM cart_items c JOIN products p ON c.product_id = p.product_id WHERE c.user_id = $user_id LIMIT 1");
-        $exist_m = mysqli_fetch_assoc($check_m);
-
-        if ($exist_m && $exist_m['merchant_id'] != $target_m) {
-            echo json_encode(["status" => "error", "message" => "Hanya bisa pesan dari 1 gerai sekaligus! Kosongkan keranjang sebelumnya."]);
-            exit;
+            if ($exist_m && $exist_m['merchant_id'] != $target_m) {
+                echo json_encode(["status" => "error", "message" => "Hanya bisa pesan dari 1 gerai sekaligus! Kosongkan keranjang sebelumnya."]);
+                exit;
+            }
         }
 
-        // Cek apakah barang sudah ada di keranjang
-        $cek = mysqli_query($conn, "SELECT quantity FROM cart_items WHERE user_id = $user_id AND product_id = $p_id");
+        // Cek apakah barang sudah ada di keranjang menggunakan buyer_id
+        $cek = mysqli_query($conn, "SELECT quantity FROM cart_items WHERE buyer_id = $user_id AND product_id = $p_id");
         if ($cek && mysqli_num_rows($cek) > 0) {
-            mysqli_query($conn, "UPDATE cart_items SET quantity = quantity + 1 WHERE user_id = $user_id AND product_id = $p_id");
+            $update = mysqli_query($conn, "UPDATE cart_items SET quantity = quantity + 1 WHERE buyer_id = $user_id AND product_id = $p_id");
+            if (!$update) {
+                echo json_encode(["status" => "error", "message" => "Update Error: " . mysqli_error($conn)]);
+                exit;
+            }
         } else {
-            mysqli_query($conn, "INSERT INTO cart_items (user_id, product_id, quantity) VALUES ($user_id, $p_id, 1)");
+            // Insert menggunakan kolom buyer_id
+            $insert = mysqli_query($conn, "INSERT INTO cart_items (buyer_id, product_id, quantity) VALUES ($user_id, $p_id, 1)");
+            if (!$insert) {
+                echo json_encode(["status" => "error", "message" => "Insert Error: " . mysqli_error($conn)]);
+                exit;
+            }
         }
         echo json_encode(["status" => "success"]);
 
     } elseif ($action === 'update_qty') {
         $change = (int)$input['change']; // +1 atau -1
-        $cek = mysqli_query($conn, "SELECT quantity FROM cart_items WHERE user_id = $user_id AND product_id = $p_id");
+        $cek = mysqli_query($conn, "SELECT quantity FROM cart_items WHERE buyer_id = $user_id AND product_id = $p_id");
         $row = mysqli_fetch_assoc($cek);
         
         if ($row) {
             $new_qty = $row['quantity'] + $change;
             if ($new_qty <= 0) {
-                mysqli_query($conn, "DELETE FROM cart_items WHERE user_id = $user_id AND product_id = $p_id");
+                mysqli_query($conn, "DELETE FROM cart_items WHERE buyer_id = $user_id AND product_id = $p_id");
             } else {
-                mysqli_query($conn, "UPDATE cart_items SET quantity = $new_qty WHERE user_id = $user_id AND product_id = $p_id");
+                mysqli_query($conn, "UPDATE cart_items SET quantity = $new_qty WHERE buyer_id = $user_id AND product_id = $p_id");
             }
         }
         echo json_encode(["status" => "success"]);
     }
 
 } elseif ($method === 'DELETE') {
-    // KOSONGKAN KERANJANG
-    mysqli_query($conn, "DELETE FROM cart_items WHERE user_id = $user_id");
+    // KOSONGKAN KERANJANG menggunakan buyer_id
+    mysqli_query($conn, "DELETE FROM cart_items WHERE buyer_id = $user_id");
     echo json_encode(["status" => "success"]);
 }
 ?>
