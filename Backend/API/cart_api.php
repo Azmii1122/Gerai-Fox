@@ -1,6 +1,8 @@
 <?php
+error_reporting(0);
+ini_set('display_errors', 0);
 session_start();
-ob_clean(); // Membersihkan output buffer agar pesan error PHP/HTML tidak merusak format JSON
+ob_start(); // Mulai output buffer untuk menyaring error
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -14,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 include '../db_connect.php'; 
+mysqli_report(MYSQLI_REPORT_OFF); // Mencegah PHP 8 melempar Fatal Error (HTML) ke frontend
+ob_clean(); // Bersihkan seluruh sisa output sebelum mencetak JSON
 
 // Gunakan session asli (dinamis) dari login teman kamu
 if (!isset($_SESSION['user_id'])) {
@@ -22,6 +26,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = (int)$_SESSION['user_id'];
+$user_email = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : 'buyer@hubbite.com'; // Tambahkan variabel email
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
@@ -82,8 +87,8 @@ if ($method === 'GET') {
                 exit;
             }
         } else {
-            // Insert menggunakan kolom buyer_id
-            $insert = mysqli_query($conn, "INSERT INTO cart_items (buyer_id, product_id, quantity) VALUES ($user_id, $p_id, 1)");
+            // Insert menggunakan kolom buyer_id DAN buyer_email (Sesuai dengan struktur database kamu yang menolak NULL)
+            $insert = mysqli_query($conn, "INSERT INTO cart_items (buyer_id, buyer_email, product_id, quantity) VALUES ($user_id, '$user_email', $p_id, 1)");
             if (!$insert) {
                 echo json_encode(["status" => "error", "message" => "Insert Error: " . mysqli_error($conn)]);
                 exit;
