@@ -110,6 +110,7 @@ $tot_warung_buka = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM merchants 
             <a href="dashboard.php" class="active"><span>📊</span> Dashboard</a>
             <a href="management_user.php"><span>👥</span> Kelola User</a>
             <a href="hak_akses.php"><span>🏪</span> Kelola Warung</a>
+            <a href="all-product.php"><span>🏪</span> Kelola Product</a>
             <a href="../auth-system/logout.php" class="logout-btn"><span>🚪</span> Keluar</a>
         </nav>
     </aside>

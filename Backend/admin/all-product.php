@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../../db_connect.php'; // Sesuaikan path ke file database Anda
+include '../db_connect.php'; // Sesuaikan path ke file database Anda
 
 // PROTECTION: Pastikan hanya Admin yang bisa masuk
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
@@ -46,7 +46,7 @@ if (isset($_GET['delete_id'])) {
 // 2. AMBIL DATA PRODUK GLOBAL (JOIN MERCHANTS)
 // ==========================================
 $query = "
-    SELECT p.*, m.name as merchant_name 
+    SELECT p.*, m.store_name as store_name 
     FROM products p
     LEFT JOIN merchants m ON p.merchant_id = m.merchant_id
     ORDER BY p.product_id DESC
@@ -151,14 +151,17 @@ $result = mysqli_query($conn, $query);
             <h1><i class="fa-solid fa-shield-halved"></i> HubBite Admin</h1>
         </div>
         <nav class="sidebar-nav">
-            <a href="../dashboard.php" class="nav-link">
+            <a href="dashboard.php" class="nav-link">
                 <i class="fa-solid fa-chart-pie"></i> Dashboard
             </a>
-            <a href="admin_products.php" class="nav-link active">
-                <i class="fa-solid fa-utensils"></i> Semua Produk Warung
+            <a href="management_user.php" class="nav-link">
+                <i class="fa-solid fa-users"></i> Kelola User
             </a>
-            <a href="../merchant/management_merchant.php" class="nav-link">
+            <a href="hak_akses.php" class="nav-link">
                 <i class="fa-solid fa-store"></i> Hak Akses Warung
+            </a>
+            <a href="all-product.php" class="nav-link active">
+                <i class="fa-solid fa-utensils"></i> Semua Produk
             </a>
             <a href="../../Backend/auth-system/logout.php" class="nav-link logout">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
@@ -207,7 +210,7 @@ $result = mysqli_query($conn, $query);
                                 <td style="font-weight: 600; color: var(--slate-900);"><?= htmlspecialchars($row['name']) ?></td>
                                 <td>
                                     <span class="badge-merchant">
-                                        <?= htmlspecialchars($row['merchant_name'] ?? 'Tanpa Warung') ?>
+                                        <?= htmlspecialchars($row['store_name'] ?? 'Tanpa Warung') ?>
                                     </span>
                                 </td>
                                 <td style="color: var(--slate-500); font-size: 0.75rem; font-weight: 600;"><?= htmlspecialchars($row['category']) ?></td>
