@@ -1,43 +1,53 @@
 <?php
 session_start();
-ob_clean(); // Mencegah karakter error HTML masuk ke dalam JSON
-header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
 
 include '../db_connect.php'; 
 
-// Cek Sesi Pembeli (Tanpa API Key)
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(["status" => "error", "message" => "Sesi login tidak terdeteksi. Silakan login ulang."]); 
-    exit;
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+
+switch ($action) {
+    // Menampilkan semua warung/merchant di halaman depan (Dashboard)
+    case 'get_merchants':
+        $query = "SELECT * FROM merchants WHERE is_open = 1";
+        $res = mysqli_query($conn, $query);
+        $data = [];
+        while ($row = mysqli_fetch_assoc($res)) {
+            $data[] = $row;
+        }
+        echo json_encode(["status" => "success", "data" => $data]);
+        break;
+
+    // Menampilkan detail warung dan produk-produknya (Halaman Katalog)
+    case 'get_catalog':
+        $merchant_id = isset($_GET['merchant_id']) ? (int)$_GET['merchant_id'] : 0;
+        
+        // Data Warung
+        $q_merchant = mysqli_query($conn, "SELECT * FROM merchants WHERE merchant_id = $merchant_id");
+        $merchant = mysqli_fetch_assoc($q_merchant);
+        
+        if (!$merchant) {
+            echo json_encode(["status" => "error", "message" => "Warung tidak ditemukan!"]);
+            exit;
+        }
+
+        // Data Produk Warung Tersebut
+        $q_products = mysqli_query($conn, "SELECT * FROM products WHERE merchant_id = $merchant_id AND is_available = 1");
+        $products = [];
+        while ($row = mysqli_fetch_assoc($q_products)) {
+            $products[] = $row;
+        }
+
+        echo json_encode([
+            "status" => "success", 
+            "merchant" => $merchant, 
+            "products" => $products
+        ]);
+        break;
+
+    default:
+        echo json_encode(["status" => "error", "message" => "Action tidak valid"]);
+        break;
 }
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $merchant_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-    $q_merchant = mysqli_query($conn, "SELECT * FROM merchants WHERE merchant_id = $merchant_id");
-    $merchant = mysqli_fetch_assoc($q_merchant);
-
-    if (!$merchant) {
-        http_response_code(404);
-        echo json_encode(["status" => "error", "message" => "Kantin tidak ditemukan!"]); 
-        exit;
-    }
-
-    $q_products = mysqli_query($conn, "SELECT * FROM products WHERE merchant_id = $merchant_id ORDER BY product_id ASC");
-    $products = [];
-    while ($row = mysqli_fetch_assoc($q_products)) {
-        $products[] = $row;
-    }
-
-    echo json_encode([
-        "status" => "success", 
-        "merchant" => $merchant, 
-        "products" => $products
-    ]);
-} else {
-    http_response_code(405);
-    echo json_encode(["status" => "error", "message" => "Method Not Allowed"]);
-}
-exit;
 ?>
