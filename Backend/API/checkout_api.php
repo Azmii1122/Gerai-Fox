@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $biaya_prioritas = $is_priority ? 2000 : 0;
         $total_amount = $subtotal + $ongkir + $biaya_prioritas;
         
-        $status = ($payment_method == 'qris' ? 'paid' : 'pending');
+        $status = 'pending';
 
         // 3. Insert ke tabel orders (Gunakan $user_id dan $buyer_email)
         $qOrder = "INSERT INTO orders (buyer_id, buyer_email, merchant_id, order_mode, payment_method, status, total_amount) 

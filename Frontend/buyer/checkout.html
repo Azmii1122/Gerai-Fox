@@ -16,7 +16,7 @@
     <!-- HEADER CHECKOUT -->
     <header class="bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
-            <button onclick="window.location.href='katalog.html'" class="flex items-center gap-2 text-gray-500 hover:text-[#FF6B00] font-bold text-sm transition-all">
+            <button onclick="window.location.href='home.html'" class="flex items-center gap-2 text-gray-500 hover:text-[#FF6B00] font-bold text-sm transition-all">
                 <i data-lucide="arrow-left" class="w-5 h-5"></i> Kembali
             </button>
             <span class="text-xl font-black text-[#FF6B00] tracking-tight">Checkout</span>
@@ -132,7 +132,7 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // CONFIGURATION URLS API
-        const BASE_URL = 'http://localhost/api'; // Sesuaikan folder API kamu
+        const BASE_URL = 'http://localhost/Gerai-Fox/Backend/API'; // Sesuaikan folder API kamu
         const API_CART = `${BASE_URL}/cart_api.php`;
         const API_CHECKOUT = `${BASE_URL}/checkout_api.php`;
 
@@ -159,7 +159,7 @@
                         currentCartData = data.data;
                         if (currentCartData.length === 0) {
                             showToast("Info", "Keranjang kosong. Mengalihkan kembali...", false);
-                            setTimeout(() => { window.location.href = 'katalog.html'; }, 2000);
+                            setTimeout(() => { window.location.href = 'home.html'; }, 2000);
                         } else {
                             renderCartItems();
                         }
@@ -242,7 +242,7 @@
                 if (data.status === 'success') {
                     showToast("Checkout Berhasil!", `Pesanan #${data.order_id} berhasil dibuat.`, true);
                     // Redirect kembali ke katalog setelah 2 detik
-                    setTimeout(() => { window.location.href = 'katalog.html'; }, 2000);
+                    setTimeout(() => { window.location.href = 'success.html'; }, 1000);
                 } else {
                     btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Konfirmasi & Buat Pesanan`;
                     btn.disabled = false;
